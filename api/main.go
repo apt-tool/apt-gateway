@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+
+	"github.com/automated-pen-testing/api/internal/config"
 	"github.com/automated-pen-testing/api/internal/http/controller"
 	"github.com/automated-pen-testing/api/internal/http/middleware"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
-	"log"
-
-	"github.com/automated-pen-testing/api/internal/config"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -51,7 +51,11 @@ func main() {
 
 	auth := app.Use(mid.Auth)
 
-	auth.Get("/")
+	users := auth.Group("/users")
+
+	users.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.SendString(ctx.Locals("email").(string))
+	})
 
 	// starting app on choosing port
 	if err := app.Listen(fmt.Sprintf(":%d", *PortFlag)); err != nil {
