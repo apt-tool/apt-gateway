@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/http/request"
@@ -12,7 +13,7 @@ func (c *Controller) Login(ctx *fiber.Ctx) error {
 	req := new(request.Login)
 
 	if err := ctx.BodyParser(req); err != nil {
-		log.Println(err)
+		log.Println(fmt.Errorf("[controller.Loing] failed to parse body error=%w", err))
 
 		return fiber.ErrBadRequest
 	}
@@ -23,13 +24,13 @@ func (c *Controller) Login(ctx *fiber.Ctx) error {
 
 	token, err := c.JWTAuthenticator.GenerateToken(req.Email)
 	if err != nil {
-		log.Println(err)
+		log.Println(fmt.Errorf("[controller.Loing] failed to create token error=%w", err))
 
 		return fiber.ErrInternalServerError
 	}
 
 	if er := c.RedisConnector.Set(req.Email, token, 0); er != nil {
-		log.Println(er)
+		log.Println(fmt.Errorf("[controller.Loing] failed to save token error=%w", er))
 
 		return fiber.ErrInternalServerError
 	}
