@@ -3,6 +3,7 @@ package redis
 import "errors"
 
 var (
-	ErrSaveSet     = errors.New("failed to save the set")
-	ErrSetNotFound = errors.New("set not found")
+	ErrBadConnection = errors.New("failed to connect to redis cluster")
+	ErrSaveSet       = errors.New("failed to save the set")
+	ErrSetNotFound   = errors.New("set not found")
 )
