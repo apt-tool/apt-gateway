@@ -16,9 +16,9 @@ func (m *Middleware) Auth(ctx *fiber.Ctx) error {
 		} else {
 			log.Println(err)
 
-			return ctx.SendStatus(http.StatusUnauthorized)
+			return ctx.SendStatus(http.StatusForbidden)
 		}
 	} else {
-		return ctx.SendStatus(http.StatusBadRequest)
+		return ctx.SendStatus(http.StatusUnauthorized)
 	}
 }
