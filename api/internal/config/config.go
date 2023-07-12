@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/storage/redis"
+	"github.com/automated-pen-testing/api/internal/storage/sql"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
 
 	"github.com/knadh/koanf"
@@ -15,11 +16,12 @@ import (
 )
 
 type Config struct {
-	JWT   jwt.Config
-	Redis redis.Config
+	JWT   jwt.Config   `koanf:"jwt"`
+	Redis redis.Config `koanf:"redis"`
+	MySQL sql.Config   `koanf:"mysql"`
 }
 
-func Load() Config {
+func Load(path string) Config {
 	var instance Config
 
 	k := koanf.New(".")
@@ -28,7 +30,7 @@ func Load() Config {
 		log.Fatalf("error loading default: %s", err)
 	}
 
-	if err := k.Load(file.Provider("config.yml"), yaml.Parser()); err != nil {
+	if err := k.Load(file.Provider(path), yaml.Parser()); err != nil {
 		log.Printf("error loading config.yml: %s", err)
 	}
 
