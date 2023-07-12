@@ -17,14 +17,15 @@ import (
 func main() {
 	// creating application flags
 	var (
-		PortFlag = flag.Int("port", 8080, "http port of api")
+		PortFlag   = flag.Int("port", 8080, "http port of api")
+		ConfigFlag = flag.String("config", "config.yml", "config file path")
 	)
 
 	// parse flags
 	flag.Parse()
 
 	// load configs
-	cfg := config.Load()
+	cfg := config.Load(*ConfigFlag)
 
 	// create new jwt authenticator
 	authenticator := jwt.New(cfg.JWT)
