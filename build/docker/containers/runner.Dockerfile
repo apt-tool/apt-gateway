@@ -2,7 +2,7 @@
 FROM golang:1.20-alpine as builder
 
 # labels for swarm and other managers
-LABEL app="automated-pen-testing"
+LABEL app="automated-pen-testing-runner"
 LABEL docker_file_version="v0.0.1"
 LABEL database_driver="mysql"
 
@@ -14,7 +14,7 @@ WORKDIR /app
 
 # env variables
 ENV VERSION="v0.0.1"
-ENV APP="automated-pen-testing"
+ENV APP="automated-pen-testing-runner"
 
 # copy go.mod and go.sum
 COPY go.mod go.sum ./
