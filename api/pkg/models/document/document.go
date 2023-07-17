@@ -3,6 +3,7 @@ package document
 import (
 	"github.com/automated-pen-testing/api/pkg/enum"
 	"github.com/automated-pen-testing/api/pkg/models"
+	"github.com/automated-pen-testing/api/pkg/models/instruction"
 )
 
 type (
@@ -11,12 +12,12 @@ type (
 		ProjectID   uint
 		LogFile     string
 		Status      enum.Status
-		Instruction []*DocumentInstructions
+		Instruction []*instruction.Instruction
 	}
 
 	DocumentInstructions struct {
 		models.BaseModel
-		Instruction enum.Instruction
-		DocumentID  uint
+		InstructionID uint
+		DocumentID    uint
 	}
 )
