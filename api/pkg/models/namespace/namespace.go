@@ -17,6 +17,7 @@ type (
 
 	// NamespaceUsers stores users of namespace
 	NamespaceUsers struct {
+		models.BaseModel
 		UserID      uint //todo: ref key to user table
 		NamespaceID uint //todo: ref key to namespace
 	}
