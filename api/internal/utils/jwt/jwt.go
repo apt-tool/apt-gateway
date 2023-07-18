@@ -11,13 +11,13 @@ type authenticator struct {
 	expire int
 }
 
-func (a *authenticator) GenerateToken(email string) (string, error) {
+func (a *authenticator) GenerateToken(name string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	expireTime := time.Now().Add(time.Duration(a.expire) * time.Minute)
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["exp"] = expireTime.Unix()
-	claims["email"] = email
+	claims["name"] = name
 
 	tokenString, err := token.SignedString([]byte(a.key))
 	if err != nil {
@@ -40,9 +40,9 @@ func (a *authenticator) ParseToken(token string) (string, error) {
 	}
 
 	if claims, ok := tokenString.Claims.(jwt.MapClaims); ok && tokenString.Valid {
-		email := claims["email"].(string)
+		name := claims["name"].(string)
 
-		return email, nil
+		return name, nil
 	}
 
 	return "", ErrInvalidToken

@@ -1,7 +1,7 @@
 package jwt
 
 type Authenticator interface {
-	GenerateToken(email string) (string, error)
+	GenerateToken(name string) (string, error)
 	ParseToken(token string) (string, error)
 }
 
