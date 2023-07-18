@@ -1,6 +1,10 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"github.com/automated-pen-testing/api/internal/utils/crypto"
+
+	"gorm.io/gorm"
+)
 
 // Interface manages the user database methods.
 type Interface interface {
@@ -22,6 +26,8 @@ type core struct {
 }
 
 func (c core) Create(user *User) error {
+	user.Password = crypto.GetMD5Hash(user.Password)
+
 	return c.db.Create(user).Error
 }
 
@@ -50,7 +56,7 @@ func (c core) Validate(name, pass string) (*User, error) {
 		return nil, ErrUserNotFound
 	}
 
-	if user.Password != pass {
+	if user.Password != crypto.GetMD5Hash(pass) {
 		return nil, ErrIncorrectPassword
 	}
 
