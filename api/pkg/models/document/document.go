@@ -12,12 +12,6 @@ type (
 		ProjectID   uint
 		LogFile     string
 		Status      enum.Status
-		Instruction []*instruction.Instruction
-	}
-
-	DocumentInstructions struct {
-		models.BaseModel
-		InstructionID uint
-		DocumentID    uint
+		Instruction []*instruction.Instruction `gorm:"many2many:document_instructions;"`
 	}
 )

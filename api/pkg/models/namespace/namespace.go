@@ -11,14 +11,7 @@ type (
 	Namespace struct {
 		models.BaseModel
 		Name     string
-		Users    []*user.User
+		Users    []*user.User `gorm:"many2many:namespace_users;"`
 		Projects []*project.Project
-	}
-
-	// NamespaceUsers stores users of namespace
-	NamespaceUsers struct {
-		models.BaseModel
-		UserID      uint //todo: ref key to user table
-		NamespaceID uint //todo: ref key to namespace
 	}
 )
