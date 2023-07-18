@@ -11,3 +11,11 @@ type Interface interface {
 type core struct {
 	db *gorm.DB
 }
+
+func (c *core) Create(namespace *Namespace) error {
+	return c.db.Create(namespace).Error
+}
+
+func (c *core) Delete(namespaceID uint) error {
+	return c.db.Delete(&Namespace{}, "id = ?", namespaceID).Error
+}
