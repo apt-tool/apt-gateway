@@ -9,9 +9,9 @@ import (
 type (
 	Document struct {
 		models.BaseModel
-		ProjectID   uint
-		LogFile     string
-		Status      enum.Status
-		Instruction []*instruction.Instruction `gorm:"many2many:document_instructions;"`
+		ProjectID    uint
+		LogFile      string
+		Status       enum.Status
+		Instructions []*instruction.Instruction `gorm:"many2many:document_instructions;"`
 	}
 )

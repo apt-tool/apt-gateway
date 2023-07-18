@@ -23,7 +23,12 @@ func (c *core) Delete(projectID uint) error {
 func (c *core) GetByID(projectID uint) (*Project, error) {
 	prj := new(Project)
 
-	if err := c.db.First(&prj, "id = ?", projectID).Error; err != nil {
+	query := c.db.
+		First(&prj, "id = ?", projectID).
+		Preload("Documents").
+		Preload("Documents.Instructions")
+
+	if err := query.Error; err != nil {
 		return nil, err
 	}
 
