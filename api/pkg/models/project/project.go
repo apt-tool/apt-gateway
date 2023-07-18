@@ -10,5 +10,5 @@ type Project struct {
 	Name        string
 	Host        string
 	NamespaceID uint
-	Documents   []*document.Document
+	Documents   []*document.Document `gorm:"foreignKey:project_id"`
 }
