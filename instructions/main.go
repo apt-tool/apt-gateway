@@ -35,6 +35,8 @@ func main() {
 	})
 	http.HandleFunc("/download", downloadHandler)
 
+	log.Printf("ftp server started on :%d ...", port)
+
 	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
 		log.Fatalf("failed to start ftp server error=%v\n", err)
 	}
