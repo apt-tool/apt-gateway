@@ -6,12 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
-// Interface manages the user database methods.
+// Interface manages the user database methods
 type Interface interface {
 	Create(user *User) error
 	Delete(userID uint) error
 	Update(userID uint, user *User) error
 	Get() ([]*User, error)
+	GetByID(userID uint) (*User, error)
 	Validate(name, pass string) (*User, error)
 }
 
@@ -47,6 +48,16 @@ func (c core) Get() ([]*User, error) {
 	}
 
 	return list, nil
+}
+
+func (c core) GetByID(userID uint) (*User, error) {
+	user := new(User)
+
+	if err := c.db.First(&user).Where("id = ?", userID).Error; err != nil {
+		return nil, ErrUserNotFound
+	}
+
+	return user, nil
 }
 
 func (c core) Validate(name, pass string) (*User, error) {

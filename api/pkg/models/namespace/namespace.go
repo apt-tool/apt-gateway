@@ -11,7 +11,7 @@ type (
 	Namespace struct {
 		models.BaseModel
 		Name     string
-		Users    []*user.User `gorm:"many2many:namespace_users;"`
-		Projects []*project.Project
+		Users    []*user.User       `gorm:"many2many:namespace_users;"`
+		Projects []*project.Project `gorm:"foreignKey:namespace_id"`
 	}
 )
