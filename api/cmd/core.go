@@ -1,8 +1,13 @@
 package cmd
 
 import (
-	"github.com/automated-pen-testing/api/internal/config"
+	"fmt"
+	"log"
 
+	"github.com/automated-pen-testing/api/internal/config"
+	"github.com/automated-pen-testing/api/internal/core"
+
+	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -22,5 +27,16 @@ func (c Core) Command() *cobra.Command {
 }
 
 func (c Core) main() {
+	// create new fiber app
+	app := fiber.New()
 
+	// register core
+	core.Register{
+		Cfg: c.Cfg,
+	}.Create(app)
+
+	// starting app on choosing port
+	if err := app.Listen(fmt.Sprintf(":%d", c.Cfg.Core.Port)); err != nil {
+		log.Fatal(err)
+	}
 }
