@@ -2,6 +2,8 @@ package core
 
 import (
 	"github.com/automated-pen-testing/api/internal/config"
+	"github.com/automated-pen-testing/api/internal/core/handler"
+	"github.com/automated-pen-testing/api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -11,7 +13,10 @@ type Register struct {
 }
 
 func (r Register) Create(app *fiber.App) {
-	app.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.SendString("OK")
-	})
+	h := handler.Handler{
+		Client: nil,
+		Models: models.New(nil),
+	}
+
+	app.Get("/", h.Process)
 }
