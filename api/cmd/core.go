@@ -2,18 +2,18 @@ package cmd
 
 import "github.com/spf13/cobra"
 
-type Runner struct{}
+type Core struct{}
 
-func (r Runner) Command() *cobra.Command {
+func (c Core) Command() *cobra.Command {
 	return &cobra.Command{
-		Use:   "runner",
-		Short: "start apt runner",
+		Use:   "core",
+		Short: "start apt core processor",
 		Run: func(_ *cobra.Command, _ []string) {
-			r.main()
+			c.main()
 		},
 	}
 }
 
-func (r Runner) main() {
+func (c Core) main() {
 
 }
