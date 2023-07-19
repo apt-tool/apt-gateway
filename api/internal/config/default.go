@@ -1,6 +1,8 @@
 package config
 
 import (
+	"github.com/automated-pen-testing/api/internal/config/core"
+	"github.com/automated-pen-testing/api/internal/config/http"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
 	"github.com/automated-pen-testing/api/internal/storage/sql"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
@@ -8,6 +10,15 @@ import (
 
 func Default() Config {
 	return Config{
+		Core: core.Config{
+			Preemptive: false,
+			Port:       8080,
+			Enable:     false,
+		},
+		HTTP: http.Config{
+			Port: 8080,
+			Core: "",
+		},
 		JWT: jwt.Config{
 			PrivateKey: "private",
 			ExpireTime: 60,

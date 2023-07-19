@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log"
 
+	"github.com/automated-pen-testing/api/internal/config/core"
+	"github.com/automated-pen-testing/api/internal/config/http"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
 	"github.com/automated-pen-testing/api/internal/storage/sql"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
@@ -16,6 +18,8 @@ import (
 )
 
 type Config struct {
+	Core  core.Config  `koanf:"core"`
+	HTTP  http.Config  `koanf:"http"`
 	JWT   jwt.Config   `koanf:"jwt"`
 	Redis redis.Config `koanf:"redis"`
 	MySQL sql.Config   `koanf:"mysql"`
