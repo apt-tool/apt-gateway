@@ -1,8 +1,15 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/automated-pen-testing/api/internal/config"
 
-type Core struct{}
+	"github.com/spf13/cobra"
+)
+
+// Core is the processing logic of the apt
+type Core struct {
+	Cfg config.Config
+}
 
 func (c Core) Command() *cobra.Command {
 	return &cobra.Command{

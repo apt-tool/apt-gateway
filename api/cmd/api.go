@@ -2,16 +2,19 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/automated-pen-testing/api/internal/config"
 	"github.com/automated-pen-testing/api/internal/http/controller"
 	"github.com/automated-pen-testing/api/internal/http/middleware"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cobra"
-	"log"
 )
 
+// API command is used to start API server
 type API struct {
 	Cfg config.Config
 }
@@ -33,7 +36,7 @@ func (a API) main() {
 	// create redis connection
 	redisConnection, err := redis.New(a.Cfg.Redis)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal(fmt.Errorf("failed to connect to redis cluster: %w", err))
 	}
 
 	// create middleware and controller
@@ -55,7 +58,7 @@ func (a API) main() {
 	users := auth.Group("/users")
 
 	users.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.SendString(ctx.Locals("email").(string))
+		return ctx.SendString(ctx.Locals("name").(string))
 	})
 
 	// starting app on choosing port

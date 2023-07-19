@@ -22,7 +22,9 @@ func main() {
 		cmd.API{
 			Cfg: cfg,
 		}.Command(),
-		cmd.Core{}.Command(),
+		cmd.Core{
+			Cfg: cfg,
+		}.Command(),
 	)
 
 	// execute root command
