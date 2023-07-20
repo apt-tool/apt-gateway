@@ -6,6 +6,7 @@ import (
 	"github.com/automated-pen-testing/api/internal/http/middleware"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
+	"github.com/automated-pen-testing/api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -13,6 +14,7 @@ import (
 type Register struct {
 	Cfg config.Config
 	Rdb redis.Connector
+	Mdb *models.Interface
 }
 
 func (r Register) Create(app *fiber.App) {
@@ -22,19 +24,21 @@ func (r Register) Create(app *fiber.App) {
 	// create middleware and controller
 	mid := middleware.Middleware{
 		JWTAuthenticator: authenticator,
+		Models:           r.Mdb,
+		RedisConnector:   r.Rdb,
 	}
 	ctl := controller.Controller{
 		JWTAuthenticator: authenticator,
+		Models:           r.Mdb,
 		RedisConnector:   r.Rdb,
 	}
 
-	app.Post("/login", ctl.Login)
+	// register endpoints
+	app.Post("/login", ctl.UserLogin)
 
 	auth := app.Use(mid.Auth)
 
 	users := auth.Group("/users")
 
-	users.Get("/", func(ctx *fiber.Ctx) error {
-		return ctx.SendString(ctx.Locals("name").(string))
-	})
+	users.Post("/register", ctl.UserRegister)
 }
