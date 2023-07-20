@@ -37,8 +37,9 @@ func (r Register) Create(app *fiber.App) {
 	app.Post("/login", ctl.UserLogin)
 
 	auth := app.Use(mid.Auth)
+	admin := auth.Use(mid.Admin)
 
-	users := auth.Group("/users")
+	users := admin.Group("/users")
 
 	users.Post("/register", ctl.UserRegister)
 }

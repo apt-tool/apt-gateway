@@ -7,14 +7,17 @@ import (
 	"github.com/automated-pen-testing/api/internal/config"
 	"github.com/automated-pen-testing/api/internal/http"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
+	"github.com/automated-pen-testing/api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/spf13/cobra"
+	"gorm.io/gorm"
 )
 
 // API command is used to start API server
 type API struct {
 	Cfg config.Config
+	Db  *gorm.DB
 }
 
 func (a API) Command() *cobra.Command {
@@ -34,6 +37,9 @@ func (a API) main() {
 		log.Fatal(fmt.Errorf("failed to connect to redis cluster: %w", err))
 	}
 
+	// create new models interface
+	m := models.New(a.Db)
+
 	// creating a new fiber app
 	app := fiber.New()
 
@@ -41,6 +47,7 @@ func (a API) main() {
 	http.Register{
 		Cfg: a.Cfg,
 		Rdb: redisConnection,
+		Mdb: m,
 	}.Create(app)
 
 	// starting app on choosing port

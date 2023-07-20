@@ -9,13 +9,14 @@ import (
 )
 
 type Register struct {
-	Cfg config.Config
+	Cfg    config.Config
+	Models *models.Interface
 }
 
 func (r Register) Create(app *fiber.App) {
 	h := handler.Handler{
 		Client: nil,
-		Models: models.New(nil),
+		Models: r.Models,
 	}
 
 	app.Get("/", h.Process)
