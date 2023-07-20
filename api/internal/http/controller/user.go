@@ -38,7 +38,7 @@ func (c *Controller) UserRegister(ctx *fiber.Ctx) error {
 }
 
 func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
-	req := new(request.Login)
+	req := new(request.UserRegister)
 
 	if err := ctx.BodyParser(req); err != nil {
 		log.Println(fmt.Errorf("[controller.Loing] failed to parse body error=%w", err))
@@ -50,14 +50,19 @@ func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	token, err := c.JWTAuthenticator.GenerateToken(req.Email)
+	userTmp, err := c.Models.Users.Validate(req.Name, req.Pass)
+	if err != nil {
+		return err
+	}
+
+	token, err := c.JWTAuthenticator.GenerateToken(userTmp.Username)
 	if err != nil {
 		log.Println(fmt.Errorf("[controller.Loing] failed to create token error=%w", err))
 
 		return fiber.ErrInternalServerError
 	}
 
-	if er := c.RedisConnector.Set(req.Email, token, 0); er != nil {
+	if er := c.RedisConnector.Set(userTmp.Username, token, 0); er != nil {
 		log.Println(fmt.Errorf("[controller.Loing] failed to save token error=%w", er))
 
 		return fiber.ErrInternalServerError
