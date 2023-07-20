@@ -5,11 +5,39 @@ import (
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/http/request"
+	"github.com/automated-pen-testing/api/pkg/models/user"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-func (c *Controller) Login(ctx *fiber.Ctx) error {
+func (c *Controller) UserRegister(ctx *fiber.Ctx) error {
+	req := new(request.UserRegister)
+
+	if err := ctx.BodyParser(req); err != nil {
+		log.Println(fmt.Errorf("[controller.user.Register] failed to parse body error=%w", err))
+
+		return fiber.ErrBadRequest
+	}
+
+	if err := req.Validate(); err != nil {
+		return err
+	}
+
+	userTmp := &user.User{
+		Username: req.Name,
+		Password: req.Pass,
+	}
+
+	if err := c.Models.Users.Create(userTmp); err != nil {
+		log.Println(fmt.Errorf("[controller.user.Register] failed to create user error=%w", err))
+
+		return err
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
+}
+
+func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
 	req := new(request.Login)
 
 	if err := ctx.BodyParser(req); err != nil {
