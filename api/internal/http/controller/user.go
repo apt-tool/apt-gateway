@@ -78,5 +78,7 @@ func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).SendString(errToken.Error())
 	}
 
-	return ctx.Status(fiber.StatusOK).SendString(token)
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"token": token,
+	})
 }
