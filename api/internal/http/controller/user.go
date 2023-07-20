@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/automated-pen-testing/api/internal/http/request"
-	"github.com/automated-pen-testing/api/internal/http/response"
 	"github.com/automated-pen-testing/api/pkg/models/user"
 
 	"github.com/gofiber/fiber/v2"
@@ -79,8 +78,5 @@ func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).SendString(errToken.Error())
 	}
 
-	return ctx.Status(fiber.StatusOK).JSON(response.JToken{
-		Token:   token,
-		Expires: etime,
-	})
+	return ctx.Status(fiber.StatusOK).SendString(token)
 }
