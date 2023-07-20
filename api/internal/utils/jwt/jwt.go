@@ -3,6 +3,8 @@ package jwt
 import (
 	"time"
 
+	"github.com/automated-pen-testing/api/pkg/enum"
+
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -11,20 +13,22 @@ type authenticator struct {
 	expire int
 }
 
-func (a *authenticator) GenerateToken(name string) (string, error) {
+func (a *authenticator) GenerateToken(name string, role enum.Role) (string, int64, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
-	expireTime := time.Now().Add(time.Duration(a.expire) * time.Minute)
+	expireTime := time.Now().Add(time.Duration(a.expire) * time.Minute).Unix()
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["exp"] = expireTime.Unix()
+
+	claims["exp"] = expireTime
 	claims["name"] = name
+	claims["role"] = role
 
 	tokenString, err := token.SignedString([]byte(a.key))
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return tokenString, nil
+	return tokenString, expireTime, nil
 }
 
 func (a *authenticator) ParseToken(token string) (string, error) {

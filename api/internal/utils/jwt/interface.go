@@ -1,7 +1,9 @@
 package jwt
 
+import "github.com/automated-pen-testing/api/pkg/enum"
+
 type Authenticator interface {
-	GenerateToken(name string) (string, error)
+	GenerateToken(name string, role enum.Role) (string, int64, error)
 	ParseToken(token string) (string, error)
 }
 
