@@ -2,12 +2,13 @@ package user
 
 import (
 	"github.com/automated-pen-testing/api/pkg/enum"
-	"github.com/automated-pen-testing/api/pkg/models"
+
+	"gorm.io/gorm"
 )
 
 // User is the base entity of our clients
 type User struct {
-	models.BaseModel
+	gorm.Model
 	Username string `gorm:"unique"`
 	Password string
 	Role     enum.Role

@@ -1,12 +1,13 @@
 package project
 
 import (
-	"github.com/automated-pen-testing/api/pkg/models"
 	"github.com/automated-pen-testing/api/pkg/models/document"
+
+	"gorm.io/gorm"
 )
 
 type Project struct {
-	models.BaseModel
+	gorm.Model
 	Name        string
 	Host        string
 	NamespaceID uint

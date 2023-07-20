@@ -1,9 +1,9 @@
 package instruction
 
-import "github.com/automated-pen-testing/api/pkg/models"
+import "gorm.io/gorm"
 
 type Instruction struct {
-	models.BaseModel
+	gorm.Model
 	Name string
 	Path string
 }
