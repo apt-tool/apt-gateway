@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/config"
@@ -42,6 +43,8 @@ func (a API) main() {
 
 	// creating a new fiber app
 	app := fiber.New()
+
+	app.Use(cors.New())
 
 	// register http
 	http.Register{
