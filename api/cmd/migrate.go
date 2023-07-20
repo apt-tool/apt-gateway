@@ -4,28 +4,22 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/automated-pen-testing/api/internal/config/migration"
+	"github.com/automated-pen-testing/api/internal/utils/crypto"
+	"github.com/automated-pen-testing/api/pkg/enum"
 	"github.com/automated-pen-testing/api/pkg/models/document"
 	"github.com/automated-pen-testing/api/pkg/models/instruction"
 	"github.com/automated-pen-testing/api/pkg/models/namespace"
 	"github.com/automated-pen-testing/api/pkg/models/project"
 	"github.com/automated-pen-testing/api/pkg/models/user"
 
-	"github.com/spf13/cobra"
 	"gorm.io/gorm"
 )
 
+// Migrate is the command of migration
 type Migrate struct {
-	Db *gorm.DB
-}
-
-func (m Migrate) Command() *cobra.Command {
-	return &cobra.Command{
-		Use:   "migrate",
-		Short: "execute database migrations",
-		Run: func(_ *cobra.Command, _ []string) {
-			m.main()
-		},
-	}
+	Cfg migration.Config
+	Db  *gorm.DB
 }
 
 func (m Migrate) main() {
@@ -41,5 +35,11 @@ func (m Migrate) main() {
 		if err := m.Db.AutoMigrate(item); err != nil {
 			log.Println(fmt.Errorf("failed to migrate model error=%w", err))
 		}
+	}
+
+	query := "INSERT INTO users (`username`, `password`, `role`) VALUES (?,?,?)"
+
+	if err := m.Db.Exec(query, m.Cfg.Root, crypto.GetMD5Hash(m.Cfg.Pass), enum.RoleAdmin).Error; err != nil {
+		log.Println(fmt.Errorf("failed to insert root user error=%w", err))
 	}
 }
