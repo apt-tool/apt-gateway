@@ -7,4 +7,5 @@ type Config struct {
 	User     string `koanf:"user"`
 	Pass     string `koanf:"pass"`
 	Database string `koanf:"database"`
+	Migrate  bool   `koanf:"migrate"`
 }

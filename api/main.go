@@ -22,7 +22,7 @@ func main() {
 	}
 
 	// create a migration if needed
-	if cfg.Migrate.Enable {
+	if cfg.MySQL.Migrate {
 		migrateInstance := cmd.Migrate{
 			Cfg: cfg.Migrate,
 			Db:  db,

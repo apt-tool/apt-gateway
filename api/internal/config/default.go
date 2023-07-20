@@ -34,6 +34,7 @@ func Default() Config {
 			User:     "root",
 			Pass:     "",
 			Database: "automated-pen-testing",
+			Migrate:  false,
 		},
 		Migrate: migration.Config{
 			Enable: false,

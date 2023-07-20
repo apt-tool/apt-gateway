@@ -37,9 +37,11 @@ func (m Migrate) Do() {
 		}
 	}
 
-	query := "INSERT INTO users (`username`, `password`, `role`) VALUES (?,?,?)"
+	if m.Cfg.Enable {
+		query := "INSERT INTO users (`username`, `password`, `role`) VALUES (?,?,?)"
 
-	if err := m.Db.Exec(query, m.Cfg.Root, crypto.GetMD5Hash(m.Cfg.Pass), enum.RoleAdmin).Error; err != nil {
-		log.Println(fmt.Errorf("failed to insert root user error=%w", err))
+		if err := m.Db.Exec(query, m.Cfg.Root, crypto.GetMD5Hash(m.Cfg.Pass), enum.RoleAdmin).Error; err != nil {
+			log.Println(fmt.Errorf("failed to insert root user error=%w", err))
+		}
 	}
 }
