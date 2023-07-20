@@ -7,7 +7,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (m *Middleware) Auth(ctx *fiber.Ctx) error {
+// Auth middleware check user authentication.
+func (m Middleware) Auth(ctx *fiber.Ctx) error {
 	if token := ctx.Get("x-token", ""); token != "" {
 		if name, err := m.JWTAuthenticator.ParseToken(token); err == nil {
 			ctx.Locals("user", name)

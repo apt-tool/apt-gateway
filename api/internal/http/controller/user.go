@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/automated-pen-testing/api/internal/http/request"
@@ -72,7 +73,7 @@ func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
 		return ctx.Status(fiber.StatusInternalServerError).SendString(errToken.Error())
 	}
 
-	if er := c.RedisConnector.Set(userTmp.Username, token, etime.Sub(time.Now())); er != nil {
+	if er := c.RedisConnector.Set(userTmp.Username, strconv.Itoa(int(userTmp.Role)), etime.Sub(time.Now())); er != nil {
 		log.Println(fmt.Errorf("[controller.Loing] failed to save token error=%w", er))
 
 		return ctx.Status(fiber.StatusInternalServerError).SendString(errToken.Error())
