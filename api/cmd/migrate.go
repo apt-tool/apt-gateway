@@ -22,7 +22,7 @@ type Migrate struct {
 	Db  *gorm.DB
 }
 
-func (m Migrate) main() {
+func (m Migrate) Do() {
 	models := []interface{}{
 		&document.Document{},
 		&instruction.Instruction{},

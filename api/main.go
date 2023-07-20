@@ -21,6 +21,16 @@ func main() {
 		panic(err)
 	}
 
+	// create a migration if needed
+	if cfg.Migrate.Enable {
+		migrateInstance := cmd.Migrate{
+			Cfg: cfg.Migrate,
+			Db:  db,
+		}
+
+		migrateInstance.Do()
+	}
+
 	// create root command
 	root := cobra.Command{}
 
@@ -33,9 +43,6 @@ func main() {
 		cmd.Core{
 			Cfg: cfg,
 			Db:  db,
-		}.Command(),
-		cmd.Migrate{
-			Db: db,
 		}.Command(),
 	)
 
