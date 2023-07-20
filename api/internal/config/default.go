@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/automated-pen-testing/api/internal/config/core"
 	"github.com/automated-pen-testing/api/internal/config/http"
+	"github.com/automated-pen-testing/api/internal/config/migration"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
 	"github.com/automated-pen-testing/api/internal/storage/sql"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
@@ -33,6 +34,9 @@ func Default() Config {
 			User:     "root",
 			Pass:     "",
 			Database: "automated-pen-testing",
+		},
+		Migrate: migration.Config{
+			Enable: false,
 		},
 	}
 }
