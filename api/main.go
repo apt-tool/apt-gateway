@@ -6,6 +6,7 @@ import (
 
 	"github.com/automated-pen-testing/api/cmd"
 	"github.com/automated-pen-testing/api/internal/config"
+	"github.com/automated-pen-testing/api/internal/storage/sql"
 
 	"github.com/spf13/cobra"
 )
@@ -14,6 +15,12 @@ func main() {
 	// load configs
 	cfg := config.Load("config.yml")
 
+	// database connection
+	db, err := sql.NewConnection(cfg.MySQL)
+	if err != nil {
+		panic(err)
+	}
+
 	// create root command
 	root := cobra.Command{}
 
@@ -21,9 +28,14 @@ func main() {
 	root.AddCommand(
 		cmd.API{
 			Cfg: cfg,
+			Db:  db,
 		}.Command(),
 		cmd.Core{
 			Cfg: cfg,
+			Db:  db,
+		}.Command(),
+		cmd.Migrate{
+			Db: db,
 		}.Command(),
 	)
 
