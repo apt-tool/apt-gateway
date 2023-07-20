@@ -13,19 +13,19 @@ type authenticator struct {
 	expire int
 }
 
-func (a *authenticator) GenerateToken(name string, role enum.Role) (string, int64, error) {
+func (a *authenticator) GenerateToken(name string, role enum.Role) (string, time.Time, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
-	expireTime := time.Now().Add(time.Duration(a.expire) * time.Minute).Unix()
+	expireTime := time.Now().Add(time.Duration(a.expire) * time.Minute)
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	claims["exp"] = expireTime
+	claims["exp"] = expireTime.Unix()
 	claims["name"] = name
 	claims["role"] = role
 
 	tokenString, err := token.SignedString([]byte(a.key))
 	if err != nil {
-		return "", 0, err
+		return "", time.Now(), err
 	}
 
 	return tokenString, expireTime, nil

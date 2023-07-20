@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/automated-pen-testing/api/internal/http/request"
 	"github.com/automated-pen-testing/api/pkg/models/user"
@@ -55,14 +56,14 @@ func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
 		return err
 	}
 
-	token, err := c.JWTAuthenticator.GenerateToken(userTmp.Username)
+	token, etime, err := c.JWTAuthenticator.GenerateToken(userTmp.Username, userTmp.Role)
 	if err != nil {
 		log.Println(fmt.Errorf("[controller.Loing] failed to create token error=%w", err))
 
 		return fiber.ErrInternalServerError
 	}
 
-	if er := c.RedisConnector.Set(userTmp.Username, token, 0); er != nil {
+	if er := c.RedisConnector.Set(userTmp.Username, token, etime.Sub(time.Now())); er != nil {
 		log.Println(fmt.Errorf("[controller.Loing] failed to save token error=%w", er))
 
 		return fiber.ErrInternalServerError
