@@ -8,7 +8,7 @@ import (
 // User is the base entity of our clients
 type User struct {
 	models.BaseModel
-	Username string
+	Username string `gorm:"unique"`
 	Password string
 	Role     enum.Role
 }
