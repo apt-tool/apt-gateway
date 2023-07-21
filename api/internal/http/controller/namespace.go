@@ -82,6 +82,7 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
+// GetUserNamespaces by users name
 func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 	name := ctx.Locals("name").(string)
 

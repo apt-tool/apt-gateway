@@ -46,15 +46,18 @@ func (r Register) Create(app *fiber.App) {
 	// viewer routes
 
 	// user routes
+	userRoutes := auth.Group("/user")
+
+	userRoutes.Get("/namespaces", ctl.GetUserNamespaces)
 
 	// admin routes
-	admin := auth.Use(mid.Admin)
+	adminRoutes := auth.Use(mid.Admin).Group("/admin")
 
-	users := admin.Group("/users")
+	users := adminRoutes.Group("/users")
 
 	users.Post("/register", ctl.UserRegister)
 
-	namespaces := admin.Group("/namespaces")
+	namespaces := adminRoutes.Group("/namespaces")
 
 	namespaces.Get("/", ctl.GetNamespaces)
 	namespaces.Post("/", ctl.CreateNamespace)
