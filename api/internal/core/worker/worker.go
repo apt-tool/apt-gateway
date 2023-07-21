@@ -1,9 +1,16 @@
 package worker
 
+import (
+	"github.com/automated-pen-testing/api/pkg/client"
+	"github.com/automated-pen-testing/api/pkg/models"
+)
+
 // worker is the smallest unit of our core
 type worker struct {
 	channel chan int
 	done    chan int
+	client  *client.Client
+	models  *models.Interface
 }
 
 // work method will do the logic of penetration testing

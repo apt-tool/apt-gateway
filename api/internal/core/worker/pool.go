@@ -37,6 +37,8 @@ func (p *Pool) update() {
 func (p *Pool) Register() {
 	for i := 0; i < p.capacity; i++ {
 		go worker{
+			client:  p.client,
+			models:  p.models,
 			channel: p.channel,
 			done:    p.done,
 		}.work()
