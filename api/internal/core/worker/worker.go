@@ -1,10 +1,9 @@
 package worker
 
-import "log"
-
 // worker is the smallest unit of our core
 type worker struct {
 	channel chan int
+	done    chan int
 }
 
 // work method will do the logic of penetration testing
@@ -20,6 +19,6 @@ func (w worker) work() {
 		// todo: save into log file
 		// todo: update database
 
-		log.Println(id)
+		w.done <- id
 	}
 }
