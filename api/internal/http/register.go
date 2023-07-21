@@ -64,7 +64,8 @@ func (r Register) Create(app *fiber.App) {
 
 	users := adminRoutes.Group("/users")
 
-	users.Post("/register", ctl.UserRegister)
+	users.Get("/") // get all users
+	users.Post("/", ctl.UserRegister)
 
 	namespaces := adminRoutes.Group("/namespaces")
 
@@ -72,4 +73,10 @@ func (r Register) Create(app *fiber.App) {
 	namespaces.Post("/", ctl.CreateNamespace)
 	namespaces.Put("/", ctl.UpdateNamespace)
 	namespaces.Delete("/:id", ctl.DeleteNamespace)
+
+	instructions := adminRoutes.Group("/instructions")
+
+	instructions.Get("/")      // get all instructions
+	instructions.Post("/")     // create new instruction
+	instructions.Delete(":id") // delete instruction
 }
