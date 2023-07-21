@@ -1,8 +1,7 @@
 package middleware
 
 import (
-	"log"
-	"net/http"
+	"errors"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,11 +14,9 @@ func (m Middleware) Auth(ctx *fiber.Ctx) error {
 
 			return ctx.Next()
 		} else {
-			log.Println(err)
-
-			return ctx.SendStatus(http.StatusForbidden)
+			return m.ErrHandler.ErrUnauthorized(ctx, err)
 		}
 	} else {
-		return ctx.SendStatus(http.StatusUnauthorized)
+		return m.ErrHandler.ErrUnauthorized(ctx, errors.New("token not found"))
 	}
 }

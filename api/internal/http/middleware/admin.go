@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"strconv"
 
 	"github.com/automated-pen-testing/api/pkg/enum"
@@ -14,9 +14,7 @@ import (
 func (m Middleware) Admin(ctx *fiber.Ctx) error {
 	tmp, err := m.RedisConnector.Get(ctx.Locals("name").(string))
 	if err != nil {
-		log.Println(fmt.Errorf("token expired error=%v", err))
-
-		return ctx.SendStatus(fiber.StatusUnauthorized)
+		return m.ErrHandler.ErrUnauthorized(ctx, fmt.Errorf("token expired error=%v", err))
 	}
 
 	role, _ := strconv.Atoi(tmp)
@@ -25,5 +23,5 @@ func (m Middleware) Admin(ctx *fiber.Ctx) error {
 		return ctx.Next()
 	}
 
-	return ctx.SendStatus(fiber.StatusForbidden)
+	return m.ErrHandler.ErrAccess(ctx, errors.New("user cannot access this endpoint"))
 }
