@@ -40,5 +40,25 @@ func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 }
 
 func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
+	req := new(request.NamespaceUserRequest)
 
+	if err := ctx.BodyParser(&req); err != nil {
+		return err
+	}
+
+	u, err := c.Models.Users.GetByID(req.UserID)
+	if err != nil {
+		return err
+	}
+
+	method := c.Models.Namespaces.RemoveUser
+	if req.Add {
+		method = c.Models.Namespaces.AddUser
+	}
+
+	if err := method(req.NamespaceID, u); err != nil {
+		return err
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
 }
