@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// CreateNamespace into system
 func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceRequest)
 
@@ -26,6 +27,7 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
+// DeleteNamespace by its id
 func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 	id, _ := ctx.ParamsInt("id", 0)
 
@@ -36,6 +38,7 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
+// GetNamespaces of the system
 func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceQueryRequest)
 
@@ -63,6 +66,7 @@ func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(records)
 }
 
+// UserNamespace manages namespace users
 func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceUserRequest)
 
