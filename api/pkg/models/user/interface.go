@@ -12,7 +12,8 @@ type Interface interface {
 	Delete(userID uint) error
 	Update(userID uint, user *User) error
 	Get() ([]*User, error)
-	GetByID(userID uint) (*User, error)
+	GetByID(userID uint, populate bool) (*User, error)
+	GetByName(name string, populate bool) (*User, error)
 	Validate(name, pass string) (*User, error)
 }
 
@@ -50,10 +51,30 @@ func (c core) Get() ([]*User, error) {
 	return list, nil
 }
 
-func (c core) GetByID(userID uint) (*User, error) {
+func (c core) GetByID(userID uint, populate bool) (*User, error) {
 	user := new(User)
 
-	if err := c.db.First(&user).Where("id = ?", userID).Error; err != nil {
+	query := c.db
+	if populate {
+		query = query.Preload("Namespaces")
+	}
+
+	if err := query.First(&user).Where("id = ?", userID).Error; err != nil {
+		return nil, ErrUserNotFound
+	}
+
+	return user, nil
+}
+
+func (c core) GetByName(name string, populate bool) (*User, error) {
+	user := new(User)
+
+	query := c.db
+	if populate {
+		query = query.Preload("Namespaces")
+	}
+
+	if err := query.First(&user).Where("username = ?", name).Error; err != nil {
 		return nil, ErrUserNotFound
 	}
 

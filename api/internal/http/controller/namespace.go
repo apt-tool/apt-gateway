@@ -65,7 +65,7 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.Update] failed to parse body error: %w", err))
 	}
 
-	u, err := c.Models.Users.GetByID(req.UserID)
+	u, err := c.Models.Users.GetByID(req.UserID, false)
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Update] failed to find model error: %w", err))
 	}
@@ -80,4 +80,21 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
+}
+
+func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
+	name := ctx.Locals("name").(string)
+
+	u, err := c.Models.Users.GetByName(name, true)
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to get records error: %w", err))
+	}
+
+	list := make([]*response.NamespaceResponse, 0)
+
+	for _, item := range u.Namespaces {
+		list = append(list, response.NamespaceResponse{}.DTO(item))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(list)
 }
