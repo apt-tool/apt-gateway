@@ -1,7 +1,8 @@
 package handler
 
 import (
-	"github.com/automated-pen-testing/api/internal/core/request"
+	"strconv"
+
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
 
@@ -14,11 +15,14 @@ type Handler struct {
 }
 
 func (h Handler) Process(ctx *fiber.Ctx) error {
-	req := new(request.Request)
+	id, _ := ctx.ParamsInt("project_id", 0)
 
-	if err := ctx.BodyParser(&req); err != nil {
-		return err
-	}
+	return ctx.SendString(strconv.Itoa(id))
+}
 
-	return ctx.SendStatus(fiber.StatusOK)
+func (h Handler) Register(app *fiber.App) {
+	app.Get("/:project_id", h.Process)
+	app.Get("/health", func(ctx *fiber.Ctx) error {
+		return ctx.SendStatus(fiber.StatusOK)
+	})
 }

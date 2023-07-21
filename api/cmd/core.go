@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/config"
-	"github.com/automated-pen-testing/api/internal/core"
+	"github.com/automated-pen-testing/api/internal/core/handler"
 	"github.com/automated-pen-testing/api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -37,10 +37,12 @@ func (c Core) main() {
 	modelsInstance := models.New(c.Db)
 
 	// register core
-	core.Register{
-		Cfg:    c.Cfg,
+	h := handler.Handler{
+		Client: nil,
 		Models: modelsInstance,
-	}.Create(app)
+	}
+
+	h.Register(app)
 
 	// starting app on choosing port
 	if err := app.Listen(fmt.Sprintf(":%d", c.Cfg.Core.Port)); err != nil {
