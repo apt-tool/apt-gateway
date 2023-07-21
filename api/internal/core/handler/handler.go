@@ -3,16 +3,12 @@ package handler
 import (
 	"github.com/automated-pen-testing/api/internal/core/worker"
 	"github.com/automated-pen-testing/api/internal/utils/crypto"
-	"github.com/automated-pen-testing/api/pkg/client"
-	"github.com/automated-pen-testing/api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
 	WorkerPool *worker.Pool
-	Client     *client.Client
-	Models     *models.Interface
 	Secret     string
 }
 

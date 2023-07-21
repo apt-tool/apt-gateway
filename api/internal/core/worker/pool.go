@@ -1,14 +1,24 @@
 package worker
 
+import (
+	"github.com/automated-pen-testing/api/pkg/client"
+	"github.com/automated-pen-testing/api/pkg/models"
+)
+
 type Pool struct {
+	client *client.Client
+	models *models.Interface
+
 	capacity int
 	inuse    int
 	channel  chan int
 	done     chan int
 }
 
-func New(capacity int) *Pool {
+func New(client *client.Client, models *models.Interface, capacity int) *Pool {
 	return &Pool{
+		client:   client,
+		models:   models,
 		capacity: capacity,
 		inuse:    0,
 		channel:  make(chan int),

@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/automated-pen-testing/api/internal/core/worker"
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/config"
 	"github.com/automated-pen-testing/api/internal/core/handler"
+	"github.com/automated-pen-testing/api/internal/core/worker"
 	"github.com/automated-pen-testing/api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -38,14 +38,12 @@ func (c Core) main() {
 	modelsInstance := models.New(c.Db)
 
 	// create pool instance
-	pool := worker.New(c.Cfg.Core.Workers)
+	pool := worker.New(nil, modelsInstance, c.Cfg.Core.Workers)
 	pool.Register()
 
 	// register core
 	h := handler.Handler{
 		Secret:     c.Cfg.Core.Secret,
-		Client:     nil,
-		Models:     modelsInstance,
 		WorkerPool: pool,
 	}
 
