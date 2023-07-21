@@ -34,12 +34,12 @@ func (c Core) main() {
 	app := fiber.New()
 
 	// create new models interface
-	m := models.New(c.Db)
+	modelsInstance := models.New(c.Db)
 
 	// register core
 	core.Register{
 		Cfg:    c.Cfg,
-		Models: m,
+		Models: modelsInstance,
 	}.Create(app)
 
 	// starting app on choosing port
