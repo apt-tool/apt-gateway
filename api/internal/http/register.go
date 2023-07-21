@@ -47,18 +47,18 @@ func (r Register) Create(app *fiber.App) {
 	viewerRoutes := auth.Group("/")
 
 	viewerRoutes.Get("/namespaces", ctl.GetUserNamespaces)
-	viewerRoutes.Get("/namespaces/:namespace_id/projects")                          // get namespace projects
-	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id")              // get a project
-	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id/:document_id") // download document file
+	viewerRoutes.Get("/namespaces/:namespace_id/projects", mid.UserNamespace)                          // get namespace projects
+	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace)              // get a project
+	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace) // download document file
 
 	// user routes
 	userRoutes := auth.Group("/user")
 
-	userRoutes.Get("/profile")                                          // get user profile
-	userRoutes.Post("/profile")                                         // update profile
-	userRoutes.Post("/namespaces/:namespace_id/projects")               // create project
-	userRoutes.Post("/namespaces/:namespace_id/projects/:project_id")   // execute project
-	userRoutes.Delete("/namespaces/:namespace_id/projects/:project_id") // delete project
+	userRoutes.Get("/profile")                                                             // get user profile
+	userRoutes.Post("/profile")                                                            // update profile
+	userRoutes.Post("/namespaces/:namespace_id/projects", mid.UserNamespace)               // create project
+	userRoutes.Post("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace)   // execute project
+	userRoutes.Delete("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace) // delete project
 
 	// admin routes
 	adminRoutes := auth.Use(mid.Admin).Group("/admin")
