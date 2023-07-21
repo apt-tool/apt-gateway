@@ -26,7 +26,13 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 }
 
 func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
+	id, _ := ctx.ParamsInt("id", 0)
 
+	if err := c.Models.Namespaces.Delete(uint(id)); err != nil {
+		return err
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
 }
 
 func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
