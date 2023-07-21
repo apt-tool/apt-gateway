@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"fmt"
+
 	"github.com/automated-pen-testing/api/internal/http/request"
 	"github.com/automated-pen-testing/api/internal/http/response"
 
@@ -12,11 +14,11 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, err)
+		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.Create] failed to parse body error: %w", err))
 	}
 
 	if err := c.Models.Namespaces.Create(req.ToModel()); err != nil {
-		return c.ErrHandler.ErrDatabase(ctx, err)
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Create] failed to create model error: %w", err))
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
@@ -27,7 +29,7 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 	id, _ := ctx.ParamsInt("id", 0)
 
 	if err := c.Models.Namespaces.Delete(uint(id)); err != nil {
-		return c.ErrHandler.ErrDatabase(ctx, err)
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Delete] failed to delete model error: %w", err))
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
@@ -38,12 +40,12 @@ func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceQueryRequest)
 
 	if err := ctx.QueryParser(&req); err != nil {
-		return c.ErrHandler.ErrQueryParser(ctx, err)
+		return c.ErrHandler.ErrQueryParser(ctx, fmt.Errorf("[controller.namespace.Get] failed to parse query error: %w", err))
 	}
 
 	list, err := c.Models.Namespaces.Get(req.Populate)
 	if err != nil {
-		return c.ErrHandler.ErrDatabase(ctx, err)
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Get] failed to get models error: %w", err))
 	}
 
 	records := make([]*response.NamespaceResponse, 0)
@@ -60,12 +62,12 @@ func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceUserRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, err)
+		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.User] failed to parse body error: %w", err))
 	}
 
 	u, err := c.Models.Users.GetByID(req.UserID)
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, err, errUserNotFound.Error())
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to find model error: %w", err))
 	}
 
 	method := c.Models.Namespaces.RemoveUser
@@ -74,7 +76,7 @@ func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
 	}
 
 	if er := method(req.NamespaceID, u); er != nil {
-		return c.ErrHandler.ErrDatabase(ctx, er)
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.User] failed to update error: %w", er))
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
