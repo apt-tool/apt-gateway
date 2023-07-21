@@ -57,17 +57,17 @@ func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(records)
 }
 
-// UserNamespace manages namespace users
-func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
-	req := new(request.NamespaceUserRequest)
+// UpdateNamespace manages namespace users
+func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
+	req := new(request.NamespaceUpdateRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.User] failed to parse body error: %w", err))
+		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.Update] failed to parse body error: %w", err))
 	}
 
 	u, err := c.Models.Users.GetByID(req.UserID)
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to find model error: %w", err))
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Update] failed to find model error: %w", err))
 	}
 
 	method := c.Models.Namespaces.RemoveUser
@@ -76,7 +76,7 @@ func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
 	}
 
 	if er := method(req.NamespaceID, u); er != nil {
-		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.User] failed to update error: %w", er))
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Update] failed to update error: %w", er))
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
