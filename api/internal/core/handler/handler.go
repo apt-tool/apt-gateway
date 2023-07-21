@@ -16,7 +16,8 @@ type Handler struct {
 	Secret string
 }
 
-func (h Handler) Secure(ctx *fiber.Ctx) error {
+// secure checks that the connection is from api
+func (h Handler) secure(ctx *fiber.Ctx) error {
 	cypher := ctx.Get("x-secure", "")
 
 	if crypto.GetMD5Hash(cypher) != h.Secret {
@@ -26,14 +27,16 @@ func (h Handler) Secure(ctx *fiber.Ctx) error {
 	return ctx.Next()
 }
 
-func (h Handler) Process(ctx *fiber.Ctx) error {
+// process will perform the operation
+func (h Handler) process(ctx *fiber.Ctx) error {
 	id, _ := ctx.ParamsInt("project_id", 0)
 
 	return ctx.SendString(strconv.Itoa(id))
 }
 
+// Register core apis
 func (h Handler) Register(app *fiber.App) {
-	app.Get("/:project_id", h.Secure, h.Process)
+	app.Get("/:project_id", h.secure, h.process)
 	app.Get("/health", func(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusOK)
 	})

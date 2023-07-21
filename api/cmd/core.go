@@ -38,6 +38,7 @@ func (c Core) main() {
 
 	// register core
 	h := handler.Handler{
+		Secret: c.Cfg.Core.Secret,
 		Client: nil,
 		Models: modelsInstance,
 	}
