@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/automated-pen-testing/api/internal/http/request"
 	"github.com/automated-pen-testing/api/internal/http/response"
-	"github.com/automated-pen-testing/api/pkg/models/namespace"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -16,11 +15,7 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 		return c.ErrHandler.ErrBodyParser(ctx, err)
 	}
 
-	tmp := namespace.Namespace{
-		Name: req.Name,
-	}
-
-	if err := c.Models.Namespaces.Create(&tmp); err != nil {
+	if err := c.Models.Namespaces.Create(req.ToModel()); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, err)
 	}
 
@@ -54,13 +49,7 @@ func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 	records := make([]*response.NamespaceResponse, 0)
 
 	for _, item := range list {
-		tmp := &response.NamespaceResponse{
-			ID:        item.ID,
-			Name:      item.Name,
-			CreatedAt: item.CreatedAt,
-		}
-
-		records = append(records, tmp)
+		records = append(records, response.NamespaceResponse{}.DTO(item))
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(records)
@@ -76,7 +65,7 @@ func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
 
 	u, err := c.Models.Users.GetByID(req.UserID)
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, err, "user not found")
+		return c.ErrHandler.ErrRecordNotFound(ctx, err, errUserNotFound.Error())
 	}
 
 	method := c.Models.Namespaces.RemoveUser
