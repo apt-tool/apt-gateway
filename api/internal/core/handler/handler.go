@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"strconv"
-
+	"github.com/automated-pen-testing/api/internal/core/worker"
 	"github.com/automated-pen-testing/api/internal/utils/crypto"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
@@ -11,9 +10,10 @@ import (
 )
 
 type Handler struct {
-	Client *client.Client
-	Models *models.Interface
-	Secret string
+	WorkerPool *worker.Pool
+	Client     *client.Client
+	Models     *models.Interface
+	Secret     string
 }
 
 // secure checks that the connection is from api
@@ -31,7 +31,11 @@ func (h Handler) secure(ctx *fiber.Ctx) error {
 func (h Handler) process(ctx *fiber.Ctx) error {
 	id, _ := ctx.ParamsInt("project_id", 0)
 
-	return ctx.SendString(strconv.Itoa(id))
+	if !h.WorkerPool.Do(id) {
+		return ctx.SendStatus(fiber.StatusServiceUnavailable)
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
 }
 
 // Register core apis
