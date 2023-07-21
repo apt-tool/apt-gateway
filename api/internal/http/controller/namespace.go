@@ -13,7 +13,7 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
-		return err
+		return c.ErrHandler.ErrBodyParser(ctx, err)
 	}
 
 	tmp := namespace.Namespace{
@@ -21,7 +21,7 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 	}
 
 	if err := c.Models.Namespaces.Create(&tmp); err != nil {
-		return err
+		return c.ErrHandler.ErrDatabase(ctx, err)
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
@@ -32,7 +32,7 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 	id, _ := ctx.ParamsInt("id", 0)
 
 	if err := c.Models.Namespaces.Delete(uint(id)); err != nil {
-		return err
+		return c.ErrHandler.ErrDatabase(ctx, err)
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
@@ -42,13 +42,13 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceQueryRequest)
 
-	if err := ctx.BodyParser(&req); err != nil {
-		return err
+	if err := ctx.QueryParser(&req); err != nil {
+		return c.ErrHandler.ErrQueryParser(ctx, err)
 	}
 
 	list, err := c.Models.Namespaces.Get(req.Populate)
 	if err != nil {
-		return err
+		return c.ErrHandler.ErrDatabase(ctx, err)
 	}
 
 	records := make([]*response.NamespaceResponse, 0)
@@ -71,12 +71,12 @@ func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
 	req := new(request.NamespaceUserRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
-		return err
+		return c.ErrHandler.ErrBodyParser(ctx, err)
 	}
 
 	u, err := c.Models.Users.GetByID(req.UserID)
 	if err != nil {
-		return err
+		return c.ErrHandler.ErrRecordNotFound(ctx, err, "user not found")
 	}
 
 	method := c.Models.Namespaces.RemoveUser
@@ -84,8 +84,8 @@ func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
 		method = c.Models.Namespaces.AddUser
 	}
 
-	if err := method(req.NamespaceID, u); err != nil {
-		return err
+	if er := method(req.NamespaceID, u); er != nil {
+		return c.ErrHandler.ErrDatabase(ctx, er)
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
