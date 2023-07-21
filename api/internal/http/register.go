@@ -13,29 +13,29 @@ import (
 )
 
 type Register struct {
-	Cfg config.Config
-	Rdb redis.Connector
-	Mdb *models.Interface
+	Config          config.Config
+	RedisConnector  redis.Connector
+	ModelsInterface *models.Interface
 }
 
 func (r Register) Create(app *fiber.App) {
 	// create new jwt authenticator
-	authenticator := jwt.New(r.Cfg.JWT)
+	authenticator := jwt.New(r.Config.JWT)
 
-	eh := handler.ErrorHandler{DevMode: true}
+	errHandler := handler.ErrorHandler{DevMode: r.Config.HTTP.DevMode}
 
 	// create middleware and controller
 	mid := middleware.Middleware{
 		JWTAuthenticator: authenticator,
-		Models:           r.Mdb,
-		RedisConnector:   r.Rdb,
-		ErrHandler:       eh,
+		Models:           r.ModelsInterface,
+		RedisConnector:   r.RedisConnector,
+		ErrHandler:       errHandler,
 	}
 	ctl := controller.Controller{
 		JWTAuthenticator: authenticator,
-		Models:           r.Mdb,
-		RedisConnector:   r.Rdb,
-		ErrHandler:       eh,
+		Models:           r.ModelsInterface,
+		RedisConnector:   r.RedisConnector,
+		ErrHandler:       errHandler,
 	}
 
 	// register endpoints

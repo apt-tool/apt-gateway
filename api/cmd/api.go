@@ -39,7 +39,7 @@ func (a API) main() {
 	}
 
 	// create new models interface
-	m := models.New(a.Db)
+	modelsInstance := models.New(a.Db)
 
 	// creating a new fiber app
 	app := fiber.New()
@@ -48,9 +48,9 @@ func (a API) main() {
 
 	// register http
 	http.Register{
-		Cfg: a.Cfg,
-		Rdb: redisConnection,
-		Mdb: m,
+		Config:          a.Cfg,
+		RedisConnector:  redisConnection,
+		ModelsInterface: modelsInstance,
 	}.Create(app)
 
 	// starting app on choosing port
