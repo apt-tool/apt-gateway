@@ -36,7 +36,12 @@ func (c core) Delete(namespaceID uint) error {
 func (c core) Get(namespaceIDs []uint, populate bool) ([]*Namespace, error) {
 	list := make([]*Namespace, 0)
 
-	query := c.db.Where("id in ?", namespaceIDs)
+	query := c.db
+
+	if len(namespaceIDs) > 0 {
+		query = query.Where("id in ?", namespaceIDs)
+	}
+
 	if populate {
 		query = query.Preload("Users").Preload("Projects")
 	}

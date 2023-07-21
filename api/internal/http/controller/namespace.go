@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/automated-pen-testing/api/internal/http/request"
+	"github.com/automated-pen-testing/api/internal/http/response"
 	"github.com/automated-pen-testing/api/pkg/models/namespace"
 
 	"github.com/gofiber/fiber/v2"
@@ -36,7 +37,30 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 }
 
 func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
+	req := new(request.NamespaceQueryList)
 
+	if err := ctx.BodyParser(&req); err != nil {
+		return err
+	}
+
+	list, err := c.Models.Namespaces.Get(req.NamespaceIDs, req.Populate)
+	if err != nil {
+		return err
+	}
+
+	records := make([]*response.NamespaceResponse, 0)
+
+	for _, item := range list {
+		tmp := &response.NamespaceResponse{
+			ID:        item.ID,
+			Name:      item.Name,
+			CreatedAt: item.CreatedAt,
+		}
+
+		records = append(records, tmp)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(records)
 }
 
 func (c Controller) UserNamespace(ctx *fiber.Ctx) error {
