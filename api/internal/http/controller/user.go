@@ -13,7 +13,7 @@ import (
 )
 
 // UserRegister will create a new user into system.
-func (c *Controller) UserRegister(ctx *fiber.Ctx) error {
+func (c Controller) UserRegister(ctx *fiber.Ctx) error {
 	req := new(request.UserRegister)
 
 	if err := ctx.BodyParser(req); err != nil {
@@ -43,7 +43,7 @@ func (c *Controller) UserRegister(ctx *fiber.Ctx) error {
 }
 
 // UserLogin logs in a user.
-func (c *Controller) UserLogin(ctx *fiber.Ctx) error {
+func (c Controller) UserLogin(ctx *fiber.Ctx) error {
 	req := new(request.UserRegister)
 
 	if err := ctx.BodyParser(req); err != nil {
