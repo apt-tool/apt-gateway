@@ -47,4 +47,11 @@ func (r Register) Create(app *fiber.App) {
 	users := admin.Group("/users")
 
 	users.Post("/register", ctl.UserRegister)
+
+	namespaces := admin.Group("/namespaces")
+
+	namespaces.Get("/", ctl.GetNamespaces)
+	namespaces.Post("/", ctl.CreateNamespace)
+	namespaces.Put("/", ctl.UserNamespace)
+	namespaces.Delete("/:id", ctl.DeleteNamespace)
 }
