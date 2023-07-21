@@ -16,11 +16,31 @@ func New(capacity int) *Pool {
 	}
 }
 
-func (p Pool) Register() {
+func (p *Pool) update() {
+	for {
+		<-p.done
+
+		p.inuse--
+	}
+}
+
+func (p *Pool) Register() {
 	for i := 0; i < p.capacity; i++ {
 		go worker{
 			channel: p.channel,
 			done:    p.done,
 		}.work()
 	}
+}
+
+func (p *Pool) Do(id int) bool {
+	if p.inuse == p.capacity {
+		return false
+	}
+
+	p.inuse++
+
+	p.channel <- id
+
+	return true
 }
