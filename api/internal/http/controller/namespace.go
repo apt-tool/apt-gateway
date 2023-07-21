@@ -37,13 +37,13 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 }
 
 func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
-	req := new(request.NamespaceQueryList)
+	req := new(request.NamespaceQueryRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
 		return err
 	}
 
-	list, err := c.Models.Namespaces.Get(req.NamespaceIDs, req.Populate)
+	list, err := c.Models.Namespaces.Get(req.Populate)
 	if err != nil {
 		return err
 	}

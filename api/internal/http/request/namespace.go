@@ -10,7 +10,6 @@ type NamespaceUserRequest struct {
 	Add         bool `json:"add"`
 }
 
-type NamespaceQueryList struct {
-	NamespaceIDs []uint `query:"namespace_ids"`
-	Populate     bool   `query:"populate"`
+type NamespaceQueryRequest struct {
+	Populate bool `query:"populate"`
 }
