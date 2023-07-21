@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/automated-pen-testing/api/internal/core/worker"
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/config"
@@ -36,11 +37,16 @@ func (c Core) main() {
 	// create new models interface
 	modelsInstance := models.New(c.Db)
 
+	// create pool instance
+	pool := worker.New(c.Cfg.Core.Workers)
+	pool.Register()
+
 	// register core
 	h := handler.Handler{
-		Secret: c.Cfg.Core.Secret,
-		Client: nil,
-		Models: modelsInstance,
+		Secret:     c.Cfg.Core.Secret,
+		Client:     nil,
+		Models:     modelsInstance,
+		WorkerPool: pool,
 	}
 
 	h.Register(app)
