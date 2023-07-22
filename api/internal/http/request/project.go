@@ -3,15 +3,14 @@ package request
 import "github.com/automated-pen-testing/api/pkg/models/project"
 
 type ProjectRequest struct {
-	Name        string `json:"name"`
-	Host        string `json:"host"`
-	NamespaceID uint   `json:"namespace_id"`
+	Name string `json:"name"`
+	Host string `json:"host"`
 }
 
-func (p ProjectRequest) ToModel() *project.Project {
+func (p ProjectRequest) ToModel(namespaceID uint) *project.Project {
 	return &project.Project{
 		Name:        p.Name,
 		Host:        p.Host,
-		NamespaceID: p.NamespaceID,
+		NamespaceID: namespaceID,
 	}
 }

@@ -7,10 +7,11 @@ import (
 )
 
 type NamespaceResponse struct {
-	ID        uint            `json:"id"`
-	Name      string          `json:"name"`
-	CreatedAt time.Time       `json:"created_at"`
-	Users     []*UserResponse `json:"users"`
+	ID        uint               `json:"id"`
+	Name      string             `json:"name"`
+	CreatedAt time.Time          `json:"created_at"`
+	Users     []*UserResponse    `json:"users"`
+	Projects  []*ProjectResponse `json:"projects"`
 }
 
 func (n NamespaceResponse) DTO(namespace *namespace.Namespace) *NamespaceResponse {
@@ -25,6 +26,14 @@ func (n NamespaceResponse) DTO(namespace *namespace.Namespace) *NamespaceRespons
 	}
 
 	n.Users = list
+
+	list2 := make([]*ProjectResponse, 0)
+
+	for _, item := range namespace.Projects {
+		list2 = append(list2, ProjectResponse{}.DTO(item))
+	}
+
+	n.Projects = list2
 
 	return &n
 }
