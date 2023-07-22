@@ -48,13 +48,18 @@ func (w worker) work() {
 
 		var ids []uint
 
-		for _, id := range ids {
-			instruction, err := w.models.Instructions.Get()
+		for _, instructionID := range ids {
+			_, err := w.models.Instructions.GetByID(instructionID)
+			if err != nil {
+				log.Println(fmt.Errorf("[worker.work] failed to get instruction error=%w", err))
+
+				continue
+			}
+
+			// todo: execute instructions
+			// todo: save into log file
+			// todo: update database
 		}
-		// todo: get instructions
-		// todo: execute instructions
-		// todo: save into log file
-		// todo: update database
 
 		w.exit(id)
 	}
