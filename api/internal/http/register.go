@@ -7,6 +7,7 @@ import (
 	"github.com/automated-pen-testing/api/internal/http/middleware"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
 	"github.com/automated-pen-testing/api/internal/utils/jwt"
+	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -36,6 +37,7 @@ func (r Register) Create(app *fiber.App) {
 		Models:           r.ModelsInterface,
 		RedisConnector:   r.RedisConnector,
 		ErrHandler:       errHandler,
+		Client:           client.NewClient(),
 	}
 
 	// register endpoints

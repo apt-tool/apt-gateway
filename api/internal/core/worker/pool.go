@@ -8,7 +8,7 @@ import (
 )
 
 type Pool struct {
-	client *client.Client
+	client client.HTTPClient
 	models *models.Interface
 
 	capacity int
@@ -17,7 +17,7 @@ type Pool struct {
 	done     chan int
 }
 
-func New(client *client.Client, models *models.Interface, capacity int) *Pool {
+func New(client client.HTTPClient, models *models.Interface, capacity int) *Pool {
 	return &Pool{
 		client:   client,
 		models:   models,

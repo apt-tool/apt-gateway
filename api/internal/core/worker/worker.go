@@ -9,7 +9,7 @@ import (
 type worker struct {
 	channel chan int
 	done    chan int
-	client  *client.Client
+	client  client.HTTPClient
 	models  *models.Interface
 }
 
