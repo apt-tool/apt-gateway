@@ -26,7 +26,7 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 
 // DeleteNamespace by its id
 func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
-	id, _ := ctx.ParamsInt("id", 0)
+	id, _ := ctx.ParamsInt("namespace_id", 0)
 
 	if err := c.Models.Namespaces.Delete(uint(id)); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Delete] failed to delete model error: %w", err))

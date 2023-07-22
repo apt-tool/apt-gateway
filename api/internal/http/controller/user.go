@@ -76,3 +76,13 @@ func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(records)
 }
+
+func (c Controller) DeleteUser(ctx *fiber.Ctx) error {
+	id, _ := ctx.ParamsInt("user_id")
+
+	if err := c.Models.Users.Delete(uint(id)); err != nil {
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.user.Delete] failed to delete user error=%w", err))
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
+}
