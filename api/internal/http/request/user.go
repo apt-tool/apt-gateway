@@ -3,9 +3,8 @@ package request
 import (
 	"fmt"
 
-	"github.com/automated-pen-testing/api/pkg/models/user"
-
 	"github.com/automated-pen-testing/api/pkg/enum"
+	"github.com/automated-pen-testing/api/pkg/models/user"
 )
 
 type UserRegisterRequest struct {
@@ -13,7 +12,7 @@ type UserRegisterRequest struct {
 	Pass string `json:"password"`
 }
 
-type UserUpdateRequest struct {
+type UserRoleUpdateRequest struct {
 	UserID uint      `json:"user_id"`
 	Role   enum.Role `json:"role"`
 }

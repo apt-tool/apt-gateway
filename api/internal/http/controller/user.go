@@ -7,6 +7,7 @@ import (
 
 	"github.com/automated-pen-testing/api/internal/http/request"
 	"github.com/automated-pen-testing/api/internal/http/response"
+	"github.com/automated-pen-testing/api/internal/utils/crypto"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -77,8 +78,33 @@ func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(records)
 }
 
+// UpdateUser information
 func (c Controller) UpdateUser(ctx *fiber.Ctx) error {
-	req := new(request.UserUpdateRequest)
+	req := new(request.UserRegisterRequest)
+
+	u, err := c.Models.Users.GetByName(ctx.Locals("name").(string), false)
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to get user error=%w", err))
+	}
+
+	if len(req.Name) > 0 {
+		u.Username = req.Name
+	}
+
+	if len(req.Pass) > 0 {
+		u.Password = crypto.GetMD5Hash(req.Pass)
+	}
+
+	if er := c.Models.Users.Update(u.ID, u); er != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to update user error=%w", er))
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
+}
+
+// UpdateUserRole changes the users role
+func (c Controller) UpdateUserRole(ctx *fiber.Ctx) error {
+	req := new(request.UserRoleUpdateRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
@@ -98,6 +124,7 @@ func (c Controller) UpdateUser(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
+// DeleteUser removes user
 func (c Controller) DeleteUser(ctx *fiber.Ctx) error {
 	id, _ := ctx.ParamsInt("user_id")
 
