@@ -45,6 +45,12 @@ func (w worker) work() {
 		_ = string(cmd)
 
 		// todo: use model
+
+		var ids []uint
+
+		for _, id := range ids {
+			instruction, err := w.models.Instructions.Get()
+		}
 		// todo: get instructions
 		// todo: execute instructions
 		// todo: save into log file

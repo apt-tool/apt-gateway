@@ -11,6 +11,7 @@ type Interface interface {
 	Create(instruction *Instruction) error
 	Delete(instructionID uint) error
 	Get() ([]*Instruction, error)
+	GetByID(instructionID uint) (*Instruction, error)
 }
 
 func New(db *gorm.DB) Interface {
@@ -39,4 +40,14 @@ func (c core) Get() ([]*Instruction, error) {
 	}
 
 	return list, nil
+}
+
+func (c core) GetByID(instructionID uint) (*Instruction, error) {
+	instruction := new(Instruction)
+
+	if err := c.db.First(&instruction, "id = ?", instructionID).Error; err != nil {
+		return nil, fmt.Errorf("[model.Instruction.GetByID] failed to get record error=%w", err)
+	}
+
+	return instruction, nil
 }
