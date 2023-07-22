@@ -1,8 +1,10 @@
 package worker
 
 import (
+	"fmt"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
+	"log"
 )
 
 // worker is the smallest unit of our core
@@ -18,7 +20,11 @@ func (w worker) work() {
 	for {
 		id := <-w.channel
 
-		// todo: remove history (if exists)
+		if err := w.models.Documents.Delete(uint(id)); err != nil {
+			log.Println(fmt.Errorf("[worker.work] failed to remove documents error=%w", err))
+
+			w.exit(id)
+		}
 		// todo: analyse
 		// todo: use model
 		// todo: get instructions
@@ -26,6 +32,10 @@ func (w worker) work() {
 		// todo: save into log file
 		// todo: update database
 
-		w.done <- id
+		w.exit(id)
 	}
+}
+
+func (w worker) exit(id int) {
+	w.done <- id
 }
