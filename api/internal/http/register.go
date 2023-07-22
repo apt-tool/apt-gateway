@@ -81,5 +81,5 @@ func (r Register) Create(app *fiber.App) {
 
 	instructions.Get("/", ctl.GetInstructions)
 	instructions.Post("/", ctl.CreateInstruction)
-	instructions.Delete(":instruction_id") // delete instruction
+	instructions.Delete(":instruction_id", ctl.DeleteInstruction)
 }

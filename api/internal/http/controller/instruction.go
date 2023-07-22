@@ -39,3 +39,14 @@ func (c Controller) GetInstructions(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(records)
 }
+
+// DeleteInstruction removes one instruction
+func (c Controller) DeleteInstruction(ctx *fiber.Ctx) error {
+	id, _ := ctx.ParamsInt("instruction_id", 0)
+
+	if err := c.Models.Instructions.Delete(uint(id)); err != nil {
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.instruction.Delete] failed to delete instruction error=%w", err))
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
+}
