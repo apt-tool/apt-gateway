@@ -33,6 +33,7 @@ func (r Register) Create(app *fiber.App) {
 		ErrHandler:       errHandler,
 	}
 	ctl := controller.Controller{
+		Config:           r.Config,
 		JWTAuthenticator: authenticator,
 		Models:           r.ModelsInterface,
 		RedisConnector:   r.RedisConnector,
@@ -59,7 +60,7 @@ func (r Register) Create(app *fiber.App) {
 	userRoutes.Get("/profile", ctl.GetUser)
 	userRoutes.Post("/profile", ctl.UpdateUser)
 	userRoutes.Post("/namespaces/:namespace_id/projects", mid.UserNamespace, ctl.CreateProject)
-	userRoutes.Post("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace) // execute project
+	userRoutes.Post("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.ExecuteProject)
 	userRoutes.Delete("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.DeleteProject)
 
 	// admin routes
