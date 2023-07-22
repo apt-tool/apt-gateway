@@ -77,6 +77,27 @@ func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(records)
 }
 
+func (c Controller) UpdateUser(ctx *fiber.Ctx) error {
+	req := new(request.UserUpdateRequest)
+
+	if err := ctx.BodyParser(&req); err != nil {
+		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
+	}
+
+	u, err := c.Models.Users.GetByID(req.UserID, false)
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to find user error=%w", err))
+	}
+
+	u.Role = req.Role
+
+	if er := c.Models.Users.Update(req.UserID, u); er != nil {
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.user.Update] failed to update user error=%w", err))
+	}
+
+	return ctx.SendStatus(fiber.StatusOK)
+}
+
 func (c Controller) DeleteUser(ctx *fiber.Ctx) error {
 	id, _ := ctx.ParamsInt("user_id")
 

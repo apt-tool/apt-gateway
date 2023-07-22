@@ -67,7 +67,7 @@ func (r Register) Create(app *fiber.App) {
 
 	users.Get("/", ctl.GetUsersList)
 	users.Post("/", ctl.UserRegister)
-	users.Put("/:user_id") // update user role
+	users.Put("/", ctl.UpdateUser)
 	users.Delete("/:user_id", ctl.DeleteUser)
 
 	namespaces := adminRoutes.Group("/namespaces")
