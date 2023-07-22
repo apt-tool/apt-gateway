@@ -1,6 +1,10 @@
 package instruction
 
-import "gorm.io/gorm"
+import (
+	"fmt"
+
+	"gorm.io/gorm"
+)
 
 // Interface manages the instruction methods
 type Interface interface {
@@ -31,7 +35,7 @@ func (c core) Get() ([]*Instruction, error) {
 	list := make([]*Instruction, 0)
 
 	if err := c.db.Find(&list).Error; err != nil {
-		return nil, ErrFailedToGet
+		return nil, fmt.Errorf("[model.Instruction.Get] failed to get record error=%w", err)
 	}
 
 	return list, nil

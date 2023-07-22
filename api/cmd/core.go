@@ -23,7 +23,7 @@ type Core struct {
 func (c Core) Command() *cobra.Command {
 	return &cobra.Command{
 		Use:   "core",
-		Short: "start apt core processor",
+		Short: "start apt core system",
 		Run: func(_ *cobra.Command, _ []string) {
 			c.main()
 		},
@@ -41,7 +41,7 @@ func (c Core) main() {
 	pool := worker.New(nil, modelsInstance, c.Cfg.Core.Workers)
 	pool.Register()
 
-	// register core
+	// register core handler
 	h := handler.Handler{
 		Secret:     c.Cfg.Core.Secret,
 		WorkerPool: pool,
@@ -51,6 +51,6 @@ func (c Core) main() {
 
 	// starting app on choosing port
 	if err := app.Listen(fmt.Sprintf(":%d", c.Cfg.Core.Port)); err != nil {
-		log.Fatal(err)
+		log.Fatalf("[core] failed to start core system")
 	}
 }

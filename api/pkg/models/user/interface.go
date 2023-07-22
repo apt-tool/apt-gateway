@@ -1,6 +1,8 @@
 package user
 
 import (
+	"fmt"
+
 	"github.com/automated-pen-testing/api/internal/utils/crypto"
 
 	"gorm.io/gorm"
@@ -45,7 +47,7 @@ func (c core) Get() ([]*User, error) {
 	list := make([]*User, 0)
 
 	if err := c.db.Find(&list).Error; err != nil {
-		return nil, ErrUserNotFound
+		return nil, fmt.Errorf("[db.User.Get] failed to get records error=%w", err)
 	}
 
 	return list, nil
@@ -60,6 +62,10 @@ func (c core) GetByID(userID uint, populate bool) (*User, error) {
 	}
 
 	if err := query.First(&user).Where("id = ?", userID).Error; err != nil {
+		return nil, fmt.Errorf("[db.User.Get] failed to get records error=%w", err)
+	}
+
+	if user.ID != userID {
 		return nil, ErrUserNotFound
 	}
 
@@ -75,6 +81,10 @@ func (c core) GetByName(name string, populate bool) (*User, error) {
 	}
 
 	if err := query.First(&user).Where("username = ?", name).Error; err != nil {
+		return nil, fmt.Errorf("[db.User.Get] failed to get records error=%w", err)
+	}
+
+	if user.Username != name {
 		return nil, ErrUserNotFound
 	}
 
@@ -85,10 +95,10 @@ func (c core) Validate(name, pass string) (*User, error) {
 	user := new(User)
 
 	if err := c.db.First(&user).Where("username = ?", name).Error; err != nil {
-		return nil, ErrUserNotFound
+		return nil, fmt.Errorf("[db.User.Validate] failed to get user error=%w", err)
 	}
 
-	if user.Password != crypto.GetMD5Hash(pass) {
+	if user.Username != name || user.Password != crypto.GetMD5Hash(pass) {
 		return nil, ErrIncorrectPassword
 	}
 

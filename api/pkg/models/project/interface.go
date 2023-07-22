@@ -1,8 +1,12 @@
 package project
 
-import "gorm.io/gorm"
+import (
+	"fmt"
 
-// Interface manages the project db mehtods
+	"gorm.io/gorm"
+)
+
+// Interface manages the project db methods
 type Interface interface {
 	Create(project *Project) error
 	Delete(projectID uint) error
@@ -28,20 +32,19 @@ func (c core) Delete(projectID uint) error {
 }
 
 func (c core) GetByID(projectID uint) (*Project, error) {
-	prj := new(Project)
+	project := new(Project)
 
 	query := c.db.
-		First(&prj, "id = ?", projectID).
+		First(&project, "id = ?", projectID).
 		Preload("Documents").
 		Preload("Documents.Instructions")
-
 	if err := query.Error; err != nil {
-		return nil, ErrFailedToGetProject
+		return nil, fmt.Errorf("[db.Project.Get] failed to get record error=%w", err)
 	}
 
-	if prj.ID != projectID {
+	if project.ID != projectID {
 		return nil, ErrProjectNotFound
 	}
 
-	return prj, nil
+	return project, nil
 }

@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Document represents core log files
 type Document struct {
 	gorm.Model
 	ProjectID     uint

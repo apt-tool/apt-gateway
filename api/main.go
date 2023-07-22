@@ -18,10 +18,10 @@ func main() {
 	// database connection
 	db, err := sql.NewConnection(cfg.MySQL)
 	if err != nil {
-		panic(err)
+		log.Fatal(fmt.Errorf("[main] failed in connecting to mysql server error=%w", err))
 	}
 
-	// create a migration if needed
+	// perform migrations if needed
 	if cfg.MySQL.Migrate {
 		migrateInstance := cmd.Migrate{
 			Cfg: cfg.Migrate,
@@ -47,7 +47,7 @@ func main() {
 	)
 
 	// execute root command
-	if err := root.Execute(); err != nil {
-		log.Fatal(fmt.Errorf("failed to execute command: %w", err))
+	if er := root.Execute(); er != nil {
+		log.Fatal(fmt.Errorf("[main] failed to execute command error=%w", er))
 	}
 }

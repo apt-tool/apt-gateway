@@ -1,7 +1,7 @@
 package namespace
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/automated-pen-testing/api/pkg/models/user"
 
@@ -46,7 +46,7 @@ func (c core) Get(populate bool) ([]*Namespace, error) {
 	}
 
 	if err := c.db.Find(&list).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[db.Namespace.Get] failed to get records error=%w", err)
 	}
 
 	return list, nil
@@ -56,11 +56,11 @@ func (c core) GetByID(namespaceID uint) (*Namespace, error) {
 	namespace := new(Namespace)
 
 	if err := c.db.Preload("Projects").Where("id = ?", namespaceID).First(&namespace).Error; err != nil {
-		return nil, err
+		return nil, fmt.Errorf("[db.Namespace.GetByID] failed to get record error=%w", err)
 	}
 
 	if namespace.ID != namespaceID {
-		return nil, errors.New("namespace not found")
+		return nil, ErrRecordNotFound
 	}
 
 	return namespace, nil
