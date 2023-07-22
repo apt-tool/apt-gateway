@@ -7,4 +7,5 @@ type Config struct {
 	Enable     bool   `koanf:"enable"`
 	Preemptive bool   `koanf:"preemptive"`
 	Secret     string `koanf:"secret"`
+	FTPHost    string `koanf:"ftp_host"`
 }

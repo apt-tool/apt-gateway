@@ -64,3 +64,11 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 
 	return ctx.SendStatus(fiber.StatusOK)
 }
+
+// DownloadProjectDocument will download the project document
+func (c Controller) DownloadProjectDocument(ctx *fiber.Ctx) error {
+	documentID, _ := ctx.ParamsInt("document_id", 0)
+	url := fmt.Sprintf("%s?path=/download/%d", c.Config.HTTP.FTPHost, documentID)
+
+	return ctx.Redirect(url, fiber.StatusPermanentRedirect)
+}
