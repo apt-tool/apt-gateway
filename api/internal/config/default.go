@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/automated-pen-testing/api/internal/config/core"
+	"github.com/automated-pen-testing/api/internal/config/ftp"
 	"github.com/automated-pen-testing/api/internal/config/http"
 	"github.com/automated-pen-testing/api/internal/config/migration"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
@@ -38,6 +39,10 @@ func Default() Config {
 		},
 		Migrate: migration.Config{
 			Enable: false,
+		},
+		FTP: ftp.Config{
+			Host:   "",
+			Secret: "",
 		},
 	}
 }

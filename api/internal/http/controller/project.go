@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/automated-pen-testing/api/internal/utils/crypto"
 
 	"github.com/automated-pen-testing/api/internal/http/request"
 	"github.com/automated-pen-testing/api/internal/http/response"
@@ -68,7 +69,9 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 // DownloadProjectDocument will download the project document
 func (c Controller) DownloadProjectDocument(ctx *fiber.Ctx) error {
 	documentID, _ := ctx.ParamsInt("document_id", 0)
-	url := fmt.Sprintf("%s?path=/download/%d", c.Config.HTTP.FTPHost, documentID)
+	url := fmt.Sprintf("%s/download?path=/docs/%d", c.Config.FTP.Host, documentID)
+
+	ctx.Request().Header.Set("x-token", crypto.GetMD5Hash(fmt.Sprintf("%s:%d", c.Config.FTP.Secret, documentID)))
 
 	return ctx.Redirect(url, fiber.StatusPermanentRedirect)
 }

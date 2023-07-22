@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/config/core"
+	"github.com/automated-pen-testing/api/internal/config/ftp"
 	"github.com/automated-pen-testing/api/internal/config/http"
 	"github.com/automated-pen-testing/api/internal/config/migration"
 	"github.com/automated-pen-testing/api/internal/storage/redis"
@@ -25,6 +26,7 @@ type Config struct {
 	Redis   redis.Config     `koanf:"redis"`
 	MySQL   sql.Config       `koanf:"mysql"`
 	Migrate migration.Config `koanf:"migrate"`
+	FTP     ftp.Config       `koanf:"ftp"`
 }
 
 func Load(path string) Config {
