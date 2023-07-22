@@ -1,6 +1,8 @@
 package namespace
 
 import (
+	"errors"
+
 	"github.com/automated-pen-testing/api/pkg/models/user"
 
 	"gorm.io/gorm"
@@ -11,6 +13,7 @@ type Interface interface {
 	Create(namespace *Namespace) error
 	Delete(namespaceID uint) error
 	Get(populate bool) ([]*Namespace, error)
+	GetByID(namespaceID uint) (*Namespace, error)
 	AddUser(namespaceID uint, user *user.User) error
 	RemoveUser(namespaceID uint, user *user.User) error
 }
@@ -47,6 +50,20 @@ func (c core) Get(populate bool) ([]*Namespace, error) {
 	}
 
 	return list, nil
+}
+
+func (c core) GetByID(namespaceID uint) (*Namespace, error) {
+	namespace := new(Namespace)
+
+	if err := c.db.Preload("Projects").Where("id = ?", namespaceID).First(&namespace).Error; err != nil {
+		return nil, err
+	}
+
+	if namespace.ID != namespaceID {
+		return nil, errors.New("namespace not found")
+	}
+
+	return namespace, nil
 }
 
 func (c core) AddUser(namespaceID uint, user *user.User) error {

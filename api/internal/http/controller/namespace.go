@@ -99,3 +99,15 @@ func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 
 	return ctx.Status(fiber.StatusOK).JSON(list)
 }
+
+// GetNamespace returns namespace with its projects
+func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
+	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
+
+	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID))
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Projects] failed to get projects error=%w", err))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(response.NamespaceResponse{}.DTO(namespace))
+}

@@ -47,7 +47,7 @@ func (r Register) Create(app *fiber.App) {
 	viewerRoutes := auth.Group("/")
 
 	viewerRoutes.Get("/namespaces", ctl.GetUserNamespaces)
-	viewerRoutes.Get("/namespaces/:namespace_id/projects", mid.UserNamespace)                          // get namespace projects
+	viewerRoutes.Get("/namespaces/:namespace_id/projects", mid.UserNamespace, ctl.GetNamespace)
 	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace)              // get a project
 	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace) // download document file
 
