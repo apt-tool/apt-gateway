@@ -62,6 +62,16 @@ func (c Controller) UserLogin(ctx *fiber.Ctx) error {
 	})
 }
 
+// GetUser profile
+func (c Controller) GetUser(ctx *fiber.Ctx) error {
+	record, err := c.Models.Users.GetByName(ctx.Locals("name").(string), true)
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Get] username and password don't match error=%w", err))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(response.UserResponse{}.DTO(record))
+}
+
 // GetUsersList returns the list of users
 func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 	list, err := c.Models.Users.Get()

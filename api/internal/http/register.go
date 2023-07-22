@@ -54,8 +54,8 @@ func (r Register) Create(app *fiber.App) {
 	// user routes
 	userRoutes := auth.Group("/user")
 
-	userRoutes.Get("/profile")                                                             // get user profile
-	userRoutes.Post("/profile", ctl.UpdateUser)                                            // update profile
+	userRoutes.Get("/profile", ctl.GetUser)
+	userRoutes.Post("/profile", ctl.UpdateUser)
 	userRoutes.Post("/namespaces/:namespace_id/projects", mid.UserNamespace)               // create project
 	userRoutes.Post("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace)   // execute project
 	userRoutes.Delete("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace) // delete project
