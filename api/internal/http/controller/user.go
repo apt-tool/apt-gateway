@@ -11,7 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// UserRegister will create a new user into system.
+// UserRegister will create a new user into system
 func (c Controller) UserRegister(ctx *fiber.Ctx) error {
 	req := new(request.UserRegisterRequest)
 
@@ -30,7 +30,7 @@ func (c Controller) UserRegister(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
-// UserLogin logs in a user.
+// UserLogin logs in a user
 func (c Controller) UserLogin(ctx *fiber.Ctx) error {
 	req := new(request.UserRegisterRequest)
 
@@ -59,4 +59,20 @@ func (c Controller) UserLogin(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response.Token{
 		Token: token,
 	})
+}
+
+// GetUsersList returns the list of users
+func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
+	list, err := c.Models.Users.Get()
+	if err != nil {
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.user.List] failed to get users error=%w", err))
+	}
+
+	records := make([]*response.UserResponse, 0)
+
+	for _, item := range list {
+		records = append(records, response.UserResponse{}.DTO(item))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(records)
 }
