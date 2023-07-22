@@ -2,9 +2,11 @@ package worker
 
 import (
 	"fmt"
+	"log"
+	"os/exec"
+
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
-	"log"
 )
 
 // worker is the smallest unit of our core
@@ -25,7 +27,23 @@ func (w worker) work() {
 
 			w.exit(id)
 		}
-		// todo: analyse
+
+		project, err := w.models.Projects.GetByID(uint(id))
+		if err != nil {
+			log.Println(fmt.Errorf("[worker.work] failed to get project error=%w", err))
+
+			w.exit(id)
+		}
+
+		cmd, er := exec.Command("nmap", "-sV", "--script", "nmap-vulners/", project.Host).Output()
+		if er != nil {
+			log.Println(fmt.Errorf("[worker.work] failed to analyse project error=%w", err))
+
+			w.exit(id)
+		}
+
+		_ = string(cmd)
+
 		// todo: use model
 		// todo: get instructions
 		// todo: execute instructions
