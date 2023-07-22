@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/automated-pen-testing/api/internal/http/request"
+	"github.com/automated-pen-testing/api/internal/http/response"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,6 +23,18 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
+}
+
+// GetProject by its id
+func (c Controller) GetProject(ctx *fiber.Ctx) error {
+	projectID, _ := ctx.ParamsInt("project_id", 0)
+
+	project, err := c.Models.Projects.GetByID(uint(projectID))
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.project.Get] record not found error=%w", err))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(response.ProjectResponse{}.DTO(project))
 }
 
 // DeleteProject by its id
