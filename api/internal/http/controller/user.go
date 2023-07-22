@@ -36,7 +36,7 @@ func (c Controller) UserLogin(ctx *fiber.Ctx) error {
 	req := new(request.UserRegisterRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.Loing] failed to parse body error=%w", err))
+		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Loing] failed to parse body error=%w", err))
 	}
 
 	if err := req.Validate(); err != nil {
@@ -50,11 +50,11 @@ func (c Controller) UserLogin(ctx *fiber.Ctx) error {
 
 	token, etime, err := c.JWTAuthenticator.GenerateToken(userTmp.Username, userTmp.Role)
 	if err != nil {
-		return c.ErrHandler.ErrLogical(ctx, fmt.Errorf("[controller.Loing] failed to create token error=%w", err))
+		return c.ErrHandler.ErrLogical(ctx, fmt.Errorf("[controller.user.Loing] failed to create token error=%w", err))
 	}
 
 	if er := c.RedisConnector.Set(userTmp.Username, strconv.Itoa(int(userTmp.Role)), etime.Sub(time.Now())); er != nil {
-		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.Loing] failed to save token error=%w", er))
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.user.Loing] failed to save token error=%w", er))
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(response.Token{

@@ -1,6 +1,8 @@
 package worker
 
 import (
+	"log"
+
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
 )
@@ -28,9 +30,11 @@ func New(client *client.Client, models *models.Interface, capacity int) *Pool {
 
 func (p *Pool) update() {
 	for {
-		<-p.done
+		id := <-p.done
 
 		p.inuse--
+
+		log.Printf("[worker.update] finished process for id=%d\n", id)
 	}
 }
 
@@ -43,6 +47,8 @@ func (p *Pool) Register() {
 			done:    p.done,
 		}.work()
 	}
+
+	log.Printf("[worker.Register] started %d workers\n", p.capacity)
 }
 
 func (p *Pool) Do(id int) bool {
@@ -53,6 +59,8 @@ func (p *Pool) Do(id int) bool {
 	p.inuse++
 
 	p.channel <- id
+
+	log.Printf("[worker.Do] start process for id=%d\n", id)
 
 	return true
 }

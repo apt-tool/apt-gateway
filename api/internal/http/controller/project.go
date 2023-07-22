@@ -39,9 +39,9 @@ func (c Controller) GetProject(ctx *fiber.Ctx) error {
 
 // DeleteProject by its id
 func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
-	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
+	projectID, _ := ctx.ParamsInt("project_id", 0)
 
-	if err := c.Models.Projects.Delete(uint(namespaceID)); err != nil {
+	if err := c.Models.Projects.Delete(uint(projectID)); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.project.Create] failed to delete project error=%w", err))
 	}
 

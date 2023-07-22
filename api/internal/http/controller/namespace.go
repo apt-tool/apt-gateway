@@ -106,7 +106,7 @@ func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
 
 	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID))
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Projects] failed to get projects error=%w", err))
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Get] failed to get projects error=%w", err))
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(response.NamespaceResponse{}.DTO(namespace))

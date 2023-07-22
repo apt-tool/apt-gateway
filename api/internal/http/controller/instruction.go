@@ -28,7 +28,7 @@ func (c Controller) CreateInstruction(ctx *fiber.Ctx) error {
 func (c Controller) GetInstructions(ctx *fiber.Ctx) error {
 	list, err := c.Models.Instructions.Get()
 	if err != nil {
-		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.instruction.List] failed to get instructions error=%w", err))
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.instruction.Get] failed to get instructions error=%w", err))
 	}
 
 	records := make([]*response.InstructionResponse, 0)
