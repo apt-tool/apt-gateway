@@ -79,7 +79,7 @@ func (r Register) Create(app *fiber.App) {
 
 	instructions := adminRoutes.Group("/instructions")
 
-	instructions.Get("/")                  // get all instructions
+	instructions.Get("/", ctl.GetInstructions)
 	instructions.Post("/")                 // create new instruction
 	instructions.Delete(":instruction_id") // delete instruction
 }
