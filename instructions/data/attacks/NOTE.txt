@@ -1,8 +1,8 @@
-# Attacks manual
-# type: shell script
-# inputs
-## hostname as first parameter
-### example: 127.0.0.1:8080
-# ports should attack to host
-## output should be only one param (succeed or not)
-# output log file should go into docs directory with document ```id.txt```
+[ftp.attacks]
+description: this directory stores the attacks scripts of the system
+each time you perform an execution it will run one of the scripts in this
+directory
+[scripts]
+description: all scripts should get one parameter (the host name) which
+contains an ip address and port, after that they perform an attack and
+the output data will be in docs directory
