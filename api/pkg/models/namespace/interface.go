@@ -14,6 +14,7 @@ type Interface interface {
 	Delete(namespaceID uint) error
 	Get(populate bool) ([]*Namespace, error)
 	GetByID(namespaceID uint) (*Namespace, error)
+	GetUserNamespaces(userID uint) ([]*Namespace, error)
 	AddUser(namespaceID uint, user *user.User) error
 	RemoveUser(namespaceID uint, user *user.User) error
 }
@@ -45,7 +46,7 @@ func (c core) Get(populate bool) ([]*Namespace, error) {
 		query = query.Preload("Users").Preload("Projects")
 	}
 
-	if err := c.db.Find(&list).Error; err != nil {
+	if err := query.Find(&list).Error; err != nil {
 		return nil, fmt.Errorf("[db.Namespace.Get] failed to get records error=%w", err)
 	}
 
@@ -64,6 +65,18 @@ func (c core) GetByID(namespaceID uint) (*Namespace, error) {
 	}
 
 	return namespace, nil
+}
+
+func (c core) GetUserNamespaces(userID uint) ([]*Namespace, error) {
+	list := make([]*Namespace, 0)
+
+	query := c.db.Preload("Users").Where("namespace_users.user_id = ?", userID)
+
+	if err := query.Find(&list).Error; err != nil {
+		return nil, fmt.Errorf("[db.Namespace.Get] failed to get records error=%w", err)
+	}
+
+	return list, nil
 }
 
 func (c core) AddUser(namespaceID uint, user *user.User) error {

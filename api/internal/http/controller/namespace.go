@@ -65,7 +65,7 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.Update] failed to parse body error: %w", err))
 	}
 
-	u, err := c.Models.Users.GetByID(req.UserID, false)
+	u, err := c.Models.Users.GetByID(req.UserID)
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Update] failed to find model error: %w", err))
 	}
@@ -88,12 +88,17 @@ func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 
 	u, err := c.Models.Users.GetByName(name, true)
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to get records error: %w", err))
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to get records error= %w", err))
+	}
+
+	namespaces, err := c.Models.Namespaces.GetUserNamespaces(u.ID)
+	if err != nil {
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.User] failed to get namespaces error= %w", err))
 	}
 
 	list := make([]*response.NamespaceResponse, 0)
 
-	for _, item := range u.Namespaces {
+	for _, item := range namespaces {
 		list = append(list, response.NamespaceResponse{}.DTO(item))
 	}
 

@@ -120,7 +120,7 @@ func (c Controller) UpdateUserRole(ctx *fiber.Ctx) error {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
 	}
 
-	u, err := c.Models.Users.GetByID(req.UserID, false)
+	u, err := c.Models.Users.GetByID(req.UserID)
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to find user error=%w", err))
 	}
