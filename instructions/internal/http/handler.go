@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -36,7 +37,20 @@ func (h Handler) Upload(ctx *fiber.Ctx) error {
 }
 
 func (h Handler) List(ctx *fiber.Ctx) error {
-	return nil
+	entries, err := os.ReadDir("./data/attacks/")
+	if err != nil {
+		log.Println(fmt.Errorf("[handler.List] failed to get files error=%w", err))
+
+		return fiber.ErrInternalServerError
+	}
+
+	list := make([]string, 0)
+
+	for _, e := range entries {
+		list = append(list, e.Name())
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(list)
 }
 
 func (h Handler) Execute(ctx *fiber.Ctx) error {

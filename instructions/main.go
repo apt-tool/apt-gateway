@@ -26,6 +26,7 @@ func main() {
 		PrivateKey: private,
 	}
 
+	app.Get("/", h.List)
 	app.Get("/health", h.Health)
 	app.Get("/download", h.AccessMiddleware, h.Download)
 	app.Post("/upload", h.Upload)
