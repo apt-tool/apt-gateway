@@ -1,0 +1,9 @@
+# Attacks manual
+# type: shell script
+# inputs
+## hostname as first parameter
+### example: 127.0.0.1:8080
+# ports should attack to host
+## output should be only one param (succeed or not)
+### 0 is true and 1 is false
+# output log file should go into docs directory with document ```id+doc.txt```
