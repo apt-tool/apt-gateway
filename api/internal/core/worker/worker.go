@@ -8,7 +8,9 @@ import (
 
 	"github.com/automated-pen-testing/api/internal/config/ftp"
 	"github.com/automated-pen-testing/api/pkg/client"
+	"github.com/automated-pen-testing/api/pkg/enum"
 	"github.com/automated-pen-testing/api/pkg/models"
+	"github.com/automated-pen-testing/api/pkg/models/document"
 	"github.com/automated-pen-testing/api/pkg/models/instruction"
 )
 
@@ -57,13 +59,27 @@ func (w worker) work() {
 
 		// perform each attack
 		for _, attack := range attacks {
-			// todo: create document and give id to tmp
-
-			tmp := executeRequest{
-				Param: project.Host,
-				Path:  attack.Path,
+			// create document
+			doc := &document.Document{
+				ProjectID:     projectID,
+				InstructionID: attack.ID,
+				Status:        enum.StatusInit,
 			}
 
+			if err := w.models.Documents.Create(doc); err != nil {
+				log.Println(fmt.Errorf("[worker.work] failed to create document error=%w", err))
+
+				continue
+			}
+
+			// create ftp request
+			tmp := executeRequest{
+				Param:      project.Host,
+				Path:       attack.Path,
+				DocumentID: doc.ID,
+			}
+
+			// send ftp request
 			var buffer bytes.Buffer
 			if err := json.NewEncoder(&buffer).Encode(tmp); err != nil {
 				log.Fatal(err)
