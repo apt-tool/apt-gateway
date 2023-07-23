@@ -5,6 +5,7 @@ import "gorm.io/gorm"
 // Interface manages the documents methods
 type Interface interface {
 	Create(document *Document) error
+	Update(document *Document) error
 	Delete(projectID uint) error
 }
 
@@ -20,6 +21,10 @@ type core struct {
 
 func (c core) Create(document *Document) error {
 	return c.db.Create(document).Error
+}
+
+func (c core) Update(document *Document) error {
+	return c.db.Save(document).Error
 }
 
 func (c core) Delete(projectID uint) error {
