@@ -30,7 +30,7 @@ func main() {
 	app.Get("/health", h.Health)
 	app.Get("/download", h.AccessMiddleware, h.Download)
 	app.Post("/upload", h.Upload)
-	app.Post("/execute", h.Execute)
+	app.Post("/execute", h.AuthMiddleware, h.Execute)
 
 	if err := app.Listen(fmt.Sprintf(":%d", port)); err != nil {
 		log.Fatal(fmt.Errorf("failed to start ftp server error=%w", err))
