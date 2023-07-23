@@ -1,12 +1,14 @@
 package worker
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
-	"os/exec"
 
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
+	"github.com/automated-pen-testing/api/pkg/models/instruction"
 )
 
 // worker is the smallest unit of our core
@@ -17,47 +19,59 @@ type worker struct {
 	models  *models.Interface
 }
 
+// executeRequest is used to call ftp system
+type executeRequest struct {
+	Param      string `json:"param"`
+	Path       string `json:"path"`
+	DocumentID uint   `json:"document_id"`
+}
+
 // work method will do the logic of penetration testing
 func (w worker) work() {
 	for {
+		// get project id from channel
 		id := <-w.channel
 
-		if err := w.models.Documents.Delete(uint(id)); err != nil {
+		projectID := uint(id)
+
+		// remove all used documents
+		if err := w.models.Documents.Delete(projectID); err != nil {
 			log.Println(fmt.Errorf("[worker.work] failed to remove documents error=%w", err))
 
 			w.exit(id)
 		}
 
-		project, err := w.models.Projects.GetByID(uint(id))
-		if err != nil {
-			log.Println(fmt.Errorf("[worker.work] failed to get project error=%w", err))
-
-			w.exit(id)
-		}
-
-		cmd, er := exec.Command("nmap", "-sV", "--script", "nmap-vulners/", project.Host).Output()
+		// get project from db
+		project, er := w.models.Projects.GetByID(projectID)
 		if er != nil {
-			log.Println(fmt.Errorf("[worker.work] failed to analyse project error=%w", err))
+			log.Println(fmt.Errorf("[worker.work] failed to get project error=%w", er))
 
 			w.exit(id)
 		}
 
-		_ = string(cmd)
+		// todo: choose instructions based on system analysis
 
-		// todo: use model
+		var attacks []*instruction.Instruction
 
-		var ids []uint
+		// perform each attack
+		for _, attack := range attacks {
+			// todo: create document and give id to tmp
 
-		for _, instructionID := range ids {
-			_, err := w.models.Instructions.GetByID(instructionID)
-			if err != nil {
-				log.Println(fmt.Errorf("[worker.work] failed to get instruction error=%w", err))
-
-				continue
+			tmp := executeRequest{
+				Param: project.Host,
+				Path:  attack.Path,
 			}
 
-			// todo: execute instructions
-			// todo: save into log file
+			var buffer bytes.Buffer
+			if err := json.NewEncoder(&buffer).Encode(tmp); err != nil {
+				log.Fatal(err)
+			}
+
+			_, httpError := w.client.Post("", &buffer, "")
+			if httpError != nil {
+				log.Println(fmt.Errorf("[worker.work] failed to execute script error=%w", httpError))
+			}
+
 			// todo: update database
 		}
 
