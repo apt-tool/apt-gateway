@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -26,14 +27,14 @@ func (h Handler) Download(ctx *fiber.Ctx) error {
 func (h Handler) Upload(ctx *fiber.Ctx) error {
 	name := ctx.Query("name")
 
-	file, err := ctx.FormFile("document")
+	file, err := ctx.FormFile("script")
 	if err != nil {
 		log.Println(fmt.Errorf("[handler.Upload] failed to get file error=%w", err))
 
 		return fiber.ErrBadRequest
 	}
 
-	return ctx.SaveFile(file, fmt.Sprintf("./data/attacks/%s.txt", name))
+	return ctx.SaveFile(file, fmt.Sprintf("./data/attacks/%s.sh", name))
 }
 
 func (h Handler) List(ctx *fiber.Ctx) error {
@@ -54,5 +55,33 @@ func (h Handler) List(ctx *fiber.Ctx) error {
 }
 
 func (h Handler) Execute(ctx *fiber.Ctx) error {
-	return nil
+	req := new(ExecuteRequest)
+
+	if err := ctx.BodyParser(&req); err != nil {
+		log.Println(fmt.Errorf("[handler.Execute] failed to parse body error=%w", err))
+
+		return fiber.ErrBadRequest
+	}
+
+	path := fmt.Sprintf("./data/attacks/%s.sh", req.Path)
+
+	cmd, err := exec.Command("/bin/sh", path, req.Param).Output()
+	if err != nil {
+		log.Println(fmt.Errorf("[handler.Execute] failed to get files error=%w", err))
+
+		return fiber.ErrInternalServerError
+	}
+
+	f, err := os.Create(fmt.Sprintf("./data/docs/%d.txt", req.DocumentID))
+	if err != nil {
+		log.Println(fmt.Errorf("[handler.Execute] failed to store log file error=%w", err))
+
+		return fiber.ErrInternalServerError
+	}
+
+	defer f.Close()
+
+	_, _ = f.Write(cmd)
+
+	return ctx.SendStatus(fiber.StatusOK)
 }
