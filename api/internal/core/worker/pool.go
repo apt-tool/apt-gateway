@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/config/ftp"
+	"github.com/automated-pen-testing/api/internal/core/ai"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
 )
@@ -42,8 +43,13 @@ func (p *Pool) update() {
 }
 
 func (p *Pool) Register() {
+	aiInstance := ai.AI{
+		Models: p.models,
+	}
+
 	for i := 0; i < p.capacity; i++ {
 		go worker{
+			ai:      &aiInstance,
 			cfg:     p.cfg,
 			client:  p.client,
 			models:  p.models,

@@ -7,11 +7,11 @@ import (
 	"log"
 
 	"github.com/automated-pen-testing/api/internal/config/ftp"
+	"github.com/automated-pen-testing/api/internal/core/ai"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/enum"
 	"github.com/automated-pen-testing/api/pkg/models"
 	"github.com/automated-pen-testing/api/pkg/models/document"
-	"github.com/automated-pen-testing/api/pkg/models/instruction"
 )
 
 // worker is the smallest unit of our core
@@ -21,6 +21,7 @@ type worker struct {
 	cfg     ftp.Config
 	client  client.HTTPClient
 	models  *models.Interface
+	ai      *ai.AI
 }
 
 // executeRequest is used to call ftp system
@@ -53,9 +54,14 @@ func (w worker) work() {
 			w.exit(id)
 		}
 
-		// todo: choose instructions based on system analysis
+		// get attacks from ai module
+		attacks, er := w.ai.GetAttacks()
+		if er != nil {
+			log.Println(fmt.Errorf("[worker.work] failed to call ai error=%w", er))
 
-		attacks := make([]*instruction.Instruction, 0)
+			w.exit(id)
+		}
+
 		docs := make([]*document.Document, 0)
 
 		// create document
