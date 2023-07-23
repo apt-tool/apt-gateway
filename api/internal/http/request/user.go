@@ -10,6 +10,7 @@ import (
 type UserRegisterRequest struct {
 	Name string `json:"username"`
 	Pass string `json:"password"`
+	Role int    `json:"role"`
 }
 
 type UserRoleUpdateRequest struct {
@@ -33,5 +34,6 @@ func (u UserRegisterRequest) ToModel() *user.User {
 	return &user.User{
 		Username: u.Name,
 		Password: u.Pass,
+		Role:     enum.ConvertNumberToRole(u.Role),
 	}
 }

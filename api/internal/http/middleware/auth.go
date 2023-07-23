@@ -10,7 +10,7 @@ import (
 func (m Middleware) Auth(ctx *fiber.Ctx) error {
 	if token := ctx.Get("x-token", ""); token != "" {
 		if name, err := m.JWTAuthenticator.ParseToken(token); err == nil {
-			ctx.Locals("user", name)
+			ctx.Locals("name", name)
 
 			return ctx.Next()
 		} else {
