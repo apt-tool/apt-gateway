@@ -69,10 +69,10 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 // DownloadProjectDocument will download the project document
 func (c Controller) DownloadProjectDocument(ctx *fiber.Ctx) error {
 	documentID, _ := ctx.ParamsInt("document_id", 0)
-	path := fmt.Sprintf("/docs/%d", documentID)
-	url := fmt.Sprintf("%s/download?path=%s", c.Config.FTP.Host, path)
 
-	ctx.Request().Header.Set("x-token", crypto.GetMD5Hash(fmt.Sprintf("%s%s", c.Config.FTP.Secret, path)))
+	url := fmt.Sprintf("%s/download?path=%d", c.Config.FTP.Host, documentID)
+
+	ctx.Request().Header.Set("x-secure", crypto.GetMD5Hash(fmt.Sprintf("%s%d", c.Config.FTP.Secret, documentID)))
 
 	return ctx.Redirect(url, fiber.StatusPermanentRedirect)
 }

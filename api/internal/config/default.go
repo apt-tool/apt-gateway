@@ -43,6 +43,7 @@ func Default() Config {
 		FTP: ftp.Config{
 			Host:   "",
 			Secret: "",
+			Access: "",
 		},
 	}
 }
