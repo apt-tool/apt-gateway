@@ -8,11 +8,19 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+func (h Handler) AuthMiddleware(ctx *fiber.Ctx) error {
+	if crypto.GetMD5Hash(h.PrivateKey) != ctx.Get("x-token") {
+		return fiber.ErrUnauthorized
+	}
+
+	return ctx.Next()
+}
+
 func (h Handler) AccessMiddleware(ctx *fiber.Ctx) error {
 	path := ctx.Query("path", "")
 	cypher := crypto.GetMD5Hash(fmt.Sprintf("%s%s", h.AccessKey, path))
 
-	if cypher != ctx.Get("x-token") {
+	if cypher != ctx.Get("x-secure") {
 		return fiber.ErrForbidden
 	}
 

@@ -1,17 +1,24 @@
 package http
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"fmt"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 type Handler struct {
-	AccessKey string
+	AccessKey  string
+	PrivateKey string
 }
 
 func (h Handler) Health(ctx *fiber.Ctx) error {
-	return nil
+	return ctx.SendStatus(fiber.StatusOK)
 }
 
 func (h Handler) Download(ctx *fiber.Ctx) error {
-	return nil
+	path := ctx.Query("path")
+
+	return ctx.Download(fmt.Sprintf("./data/docs/%s.txt", path), fmt.Sprintf("%s.txt", path))
 }
 
 func (h Handler) Upload(ctx *fiber.Ctx) error {
