@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/automated-pen-testing/api/internal/config/ftp"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
 	"github.com/automated-pen-testing/api/pkg/models/instruction"
@@ -15,6 +16,7 @@ import (
 type worker struct {
 	channel chan int
 	done    chan int
+	cfg     ftp.Config
 	client  client.HTTPClient
 	models  *models.Interface
 }
@@ -67,7 +69,7 @@ func (w worker) work() {
 				log.Fatal(err)
 			}
 
-			_, httpError := w.client.Post("", &buffer, "")
+			_, httpError := w.client.Post(w.cfg.Host, &buffer, fmt.Sprintf("x-token:%s", w.cfg.Secret))
 			if httpError != nil {
 				log.Println(fmt.Errorf("[worker.work] failed to execute script error=%w", httpError))
 			}

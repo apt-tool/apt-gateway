@@ -3,11 +3,13 @@ package worker
 import (
 	"log"
 
+	"github.com/automated-pen-testing/api/internal/config/ftp"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/models"
 )
 
 type Pool struct {
+	cfg    ftp.Config
 	client client.HTTPClient
 	models *models.Interface
 
@@ -17,8 +19,9 @@ type Pool struct {
 	done     chan int
 }
 
-func New(client client.HTTPClient, models *models.Interface, capacity int) *Pool {
+func New(cfg ftp.Config, client client.HTTPClient, models *models.Interface, capacity int) *Pool {
 	return &Pool{
+		cfg:      cfg,
 		client:   client,
 		models:   models,
 		capacity: capacity,
@@ -41,6 +44,7 @@ func (p *Pool) update() {
 func (p *Pool) Register() {
 	for i := 0; i < p.capacity; i++ {
 		go worker{
+			cfg:     p.cfg,
 			client:  p.client,
 			models:  p.models,
 			channel: p.channel,
