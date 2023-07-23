@@ -2,9 +2,7 @@ package user
 
 import (
 	"fmt"
-
 	"github.com/automated-pen-testing/api/internal/utils/crypto"
-
 	"gorm.io/gorm"
 )
 
@@ -56,7 +54,7 @@ func (c core) Get() ([]*User, error) {
 func (c core) GetByID(userID uint) (*User, error) {
 	user := new(User)
 
-	if err := c.db.First(&user).Where("id = ?", userID).Error; err != nil {
+	if err := c.db.Where("id = ?", userID).First(&user).Error; err != nil {
 		return nil, fmt.Errorf("[db.User.Get] failed to get records error=%w", err)
 	}
 
@@ -75,7 +73,7 @@ func (c core) GetByName(name string, populate bool) (*User, error) {
 		query = query.Preload("Namespaces")
 	}
 
-	if err := query.First(&user).Where("username = ?", name).Error; err != nil {
+	if err := query.Where("username = ?", name).First(&user).Error; err != nil {
 		return nil, fmt.Errorf("[db.User.Get] failed to get records error=%w", err)
 	}
 
@@ -89,7 +87,7 @@ func (c core) GetByName(name string, populate bool) (*User, error) {
 func (c core) Validate(name, pass string) (*User, error) {
 	user := new(User)
 
-	if err := c.db.First(&user).Where("username = ?", name).Error; err != nil {
+	if err := c.db.Where("username = ?", name).First(&user).Error; err != nil {
 		return nil, fmt.Errorf("[db.User.Validate] failed to get user error=%w", err)
 	}
 
