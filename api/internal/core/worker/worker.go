@@ -55,14 +55,16 @@ func (w worker) work() {
 
 		// todo: choose instructions based on system analysis
 
-		var attacks []*instruction.Instruction
+		attacks := make([]*instruction.Instruction, 0)
+		docs := make([]*document.Document, 0)
 
-		// perform each attack
+		// create document
 		for _, attack := range attacks {
 			// create document
 			doc := &document.Document{
 				ProjectID:     projectID,
 				InstructionID: attack.ID,
+				Instruction:   attack,
 				Status:        enum.StatusInit,
 			}
 
@@ -71,26 +73,43 @@ func (w worker) work() {
 
 				continue
 			}
+		}
+
+		// perform each attack
+		for _, doc := range docs {
+			// update doc status
+			doc.Status = enum.StatusPending
+			_ = w.models.Documents.Update(doc)
 
 			// create ftp request
 			tmp := executeRequest{
 				Param:      project.Host,
-				Path:       attack.Path,
+				Path:       doc.Instruction.Path,
 				DocumentID: doc.ID,
 			}
 
 			// send ftp request
 			var buffer bytes.Buffer
 			if err := json.NewEncoder(&buffer).Encode(tmp); err != nil {
-				log.Fatal(err)
+				log.Println(fmt.Errorf("[worker.work] failed to create request error=%w", err))
+
+				continue
 			}
 
-			_, httpError := w.client.Post(w.cfg.Host, &buffer, fmt.Sprintf("x-token:%s", w.cfg.Secret))
-			if httpError != nil {
+			// update document based of response
+			if response, httpError := w.client.Post(w.cfg.Host, &buffer, fmt.Sprintf("x-token:%s", w.cfg.Secret)); httpError != nil {
 				log.Println(fmt.Errorf("[worker.work] failed to execute script error=%w", httpError))
+
+				doc.Status = enum.StatusFailed
+			} else {
+				if response.StatusCode == 200 {
+					doc.Status = enum.StatusDone
+				} else {
+					doc.Status = enum.StatusFailed
+				}
 			}
 
-			// todo: update database
+			_ = w.models.Documents.Update(doc)
 		}
 
 		w.exit(id)
