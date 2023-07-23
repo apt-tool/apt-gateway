@@ -28,6 +28,7 @@ func main() {
 
 	app.Get("/health", h.Health)
 	app.Get("/download", h.AccessMiddleware, h.Download)
+	app.Post("/upload", h.Upload)
 
 	if err := app.Listen(fmt.Sprintf(":%d", port)); err != nil {
 		log.Fatal(fmt.Errorf("failed to start ftp server error=%w", err))

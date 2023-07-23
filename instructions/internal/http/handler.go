@@ -2,6 +2,7 @@ package http
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -22,7 +23,16 @@ func (h Handler) Download(ctx *fiber.Ctx) error {
 }
 
 func (h Handler) Upload(ctx *fiber.Ctx) error {
-	return nil
+	name := ctx.Query("name")
+
+	file, err := ctx.FormFile("document")
+	if err != nil {
+		log.Println(fmt.Errorf("[handler.Upload] failed to get file error=%w", err))
+
+		return fiber.ErrBadRequest
+	}
+
+	return ctx.SaveFile(file, fmt.Sprintf("./data/attacks/%s.txt", name))
 }
 
 func (h Handler) List(ctx *fiber.Ctx) error {
