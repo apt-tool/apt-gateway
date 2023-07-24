@@ -14,7 +14,7 @@ type Interface interface {
 	Get() ([]*User, error)
 	GetByID(userID uint) (*User, error)
 	GetByIDs(userIDs []uint) ([]*User, error)
-	GetByName(name string, populate bool) (*User, error)
+	GetByName(name string) (*User, error)
 	Validate(name, pass string) (*User, error)
 }
 
@@ -76,15 +76,10 @@ func (c core) GetByIDs(userIDs []uint) ([]*User, error) {
 	return list, nil
 }
 
-func (c core) GetByName(name string, populate bool) (*User, error) {
+func (c core) GetByName(name string) (*User, error) {
 	user := new(User)
 
-	query := c.db
-	if populate {
-		query = query.Preload("Namespaces")
-	}
-
-	if err := query.Where("username = ?", name).First(&user).Error; err != nil {
+	if err := c.db.Where("username = ?", name).First(&user).Error; err != nil {
 		return nil, fmt.Errorf("[db.User.Get] failed to get records error=%w", err)
 	}
 

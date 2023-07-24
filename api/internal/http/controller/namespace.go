@@ -74,7 +74,7 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 	name := ctx.Locals("name").(string)
 
-	u, err := c.Models.Users.GetByName(name, true)
+	u, err := c.Models.Users.GetByName(name)
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to get records error= %w", err))
 	}

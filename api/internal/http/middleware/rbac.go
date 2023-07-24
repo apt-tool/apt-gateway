@@ -10,7 +10,7 @@ func (m Middleware) UserNamespace(ctx *fiber.Ctx) error {
 	tmp, _ := ctx.ParamsInt("namespace_id", 0)
 	id := uint(tmp)
 
-	u, err := m.Models.Users.GetByName(ctx.Locals("name").(string), true)
+	u, err := m.Models.Users.GetByName(ctx.Locals("name").(string))
 	if err != nil {
 		return m.ErrHandler.ErrRecordNotFound(ctx, err)
 	}
