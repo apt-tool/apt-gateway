@@ -12,6 +12,7 @@ import (
 	"github.com/automated-pen-testing/api/pkg/models/namespace"
 	"github.com/automated-pen-testing/api/pkg/models/project"
 	"github.com/automated-pen-testing/api/pkg/models/user"
+	"github.com/automated-pen-testing/api/pkg/models/user_namespace"
 
 	"gorm.io/gorm"
 )
@@ -27,6 +28,7 @@ func (m Migrate) Do() {
 		&document.Document{},
 		&instruction.Instruction{},
 		&namespace.Namespace{},
+		&user_namespace.UserNamespace{},
 		&project.Project{},
 		&user.User{},
 	}
