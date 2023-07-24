@@ -12,8 +12,8 @@ import (
 type Interface interface {
 	Create(namespace *Namespace) error
 	Delete(namespaceID uint) error
-	Get(populate bool) ([]*Namespace, error)
-	GetByID(namespaceID uint) (*Namespace, error)
+	Get() ([]*Namespace, error)
+	GetByID(namespaceID uint, users bool) (*Namespace, error)
 	GetUserNamespaces(userID uint) ([]*Namespace, error)
 	AddUser(namespaceID uint, user *user.User) error
 	RemoveUser(namespaceID uint, user *user.User) error
@@ -37,26 +37,28 @@ func (c core) Delete(namespaceID uint) error {
 	return c.db.Delete(&Namespace{}, "id = ?", namespaceID).Error
 }
 
-func (c core) Get(populate bool) ([]*Namespace, error) {
+func (c core) Get() ([]*Namespace, error) {
 	list := make([]*Namespace, 0)
 
-	query := c.db
-
-	if populate {
-		query = query.Preload("Users").Preload("Projects")
-	}
-
-	if err := query.Find(&list).Error; err != nil {
+	if err := c.db.Find(&list).Error; err != nil {
 		return nil, fmt.Errorf("[db.Namespace.Get] failed to get records error=%w", err)
 	}
 
 	return list, nil
 }
 
-func (c core) GetByID(namespaceID uint) (*Namespace, error) {
+func (c core) GetByID(namespaceID uint, users bool) (*Namespace, error) {
 	namespace := new(Namespace)
 
-	if err := c.db.Preload("Projects").Where("id = ?", namespaceID).First(&namespace).Error; err != nil {
+	query := c.db
+
+	if users {
+		query = query.Preload("Users")
+	} else {
+		query = query.Preload("Projects")
+	}
+
+	if err := query.Where("id = ?", namespaceID).First(&namespace).Error; err != nil {
 		return nil, fmt.Errorf("[db.Namespace.GetByID] failed to get record error=%w", err)
 	}
 

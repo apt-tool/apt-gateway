@@ -78,6 +78,7 @@ func (r Register) Create(app *fiber.App) {
 	namespaces.Get("/", ctl.GetNamespaces)
 	namespaces.Post("/", ctl.CreateNamespace)
 	namespaces.Put("/", ctl.UpdateNamespace)
+	namespaces.Get("/:namespace_id", ctl.GetNamespaceUsers)
 	namespaces.Delete("/:namespace_id", ctl.DeleteNamespace)
 
 	instructions := adminRoutes.Group("/instructions")

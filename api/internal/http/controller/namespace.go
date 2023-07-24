@@ -37,13 +37,7 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 
 // GetNamespaces of the system
 func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
-	req := new(request.NamespaceQueryRequest)
-
-	if err := ctx.QueryParser(&req); err != nil {
-		return c.ErrHandler.ErrQueryParser(ctx, fmt.Errorf("[controller.namespace.Get] failed to parse query error: %w", err))
-	}
-
-	list, err := c.Models.Namespaces.Get(req.Populate)
+	list, err := c.Models.Namespaces.Get()
 	if err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Get] failed to get models error: %w", err))
 	}
@@ -109,9 +103,21 @@ func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
 	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
 
-	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID))
+	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID), false)
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Get] failed to get projects error=%w", err))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(response.NamespaceResponse{}.DTO(namespace))
+}
+
+// GetNamespaceUsers returns namespace with its users
+func (c Controller) GetNamespaceUsers(ctx *fiber.Ctx) error {
+	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
+
+	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID), true)
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.GetUsers] failed to get users error=%w", err))
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(response.NamespaceResponse{}.DTO(namespace))
