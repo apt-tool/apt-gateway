@@ -59,16 +59,11 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.Update] failed to parse body error= %w", err))
 	}
 
-	if err := c.Models.Namespaces.RemoveUsers(req.NamespaceID); err != nil {
+	if err := c.Models.UserNamespace.Clear(req.NamespaceID); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Update] failed to remove records error=%w", err))
 	}
 
-	list, err := c.Models.Users.GetByIDs(req.UserIDs)
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Update] failed to find users error= %w", err))
-	}
-
-	if er := c.Models.Namespaces.AddUser(req.NamespaceID, list); er != nil {
+	if er := c.Models.UserNamespace.Create(req.NamespaceID, req.UserIDs); er != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Update] failed to update error= %w", er))
 	}
 
@@ -102,7 +97,7 @@ func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
 	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
 
-	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID), false)
+	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID))
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Get] failed to get projects error=%w", err))
 	}
@@ -114,10 +109,22 @@ func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
 func (c Controller) GetNamespaceUsers(ctx *fiber.Ctx) error {
 	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
 
-	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID), true)
+	ids, err := c.Models.UserNamespace.GetUsers(uint(namespaceID))
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.GetUsers] failed to get ids error=%w", err))
+	}
+
+	users, err := c.Models.Users.GetByIDs(ids)
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.GetUsers] failed to get users error=%w", err))
 	}
+
+	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID))
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.GetUsers] failed to get namespace error=%w", err))
+	}
+
+	namespace.Users = users
 
 	return ctx.Status(fiber.StatusOK).JSON(response.NamespaceResponse{}.DTO(namespace))
 }
