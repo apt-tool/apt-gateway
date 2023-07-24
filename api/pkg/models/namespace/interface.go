@@ -15,8 +15,8 @@ type Interface interface {
 	Get() ([]*Namespace, error)
 	GetByID(namespaceID uint, users bool) (*Namespace, error)
 	GetUserNamespaces(userID uint) ([]*Namespace, error)
-	AddUser(namespaceID uint, user *user.User) error
-	RemoveUser(namespaceID uint, user *user.User) error
+	AddUser(namespaceID uint, users []*user.User) error
+	RemoveUsers(namespaceID uint) error
 }
 
 func New(db *gorm.DB) Interface {
@@ -81,16 +81,17 @@ func (c core) GetUserNamespaces(userID uint) ([]*Namespace, error) {
 	return list, nil
 }
 
-func (c core) AddUser(namespaceID uint, user *user.User) error {
+func (c core) AddUser(namespaceID uint, users []*user.User) error {
 	return c.db.Model(&Namespace{}).
 		Where("id = ?", namespaceID).
 		Association("Users").
-		Append(user)
+		Append(users)
 }
 
-func (c core) RemoveUser(namespaceID uint, user *user.User) error {
+func (c core) RemoveUsers(namespaceID uint) error {
 	return c.db.Model(&Namespace{}).
 		Where("id = ?", namespaceID).
 		Association("Users").
-		Delete(user)
+		Unscoped().
+		Clear()
 }

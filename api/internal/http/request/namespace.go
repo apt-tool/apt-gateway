@@ -7,8 +7,8 @@ type NamespaceRequest struct {
 }
 
 type NamespaceUpdateRequest struct {
-	UserID       uint   `json:"user_id"`
-	NamespaceIDs []uint `json:"namespace_ids"`
+	UserIDs     []uint `json:"user_ids"`
+	NamespaceID uint   `json:"namespace_id"`
 }
 
 type NamespaceQueryRequest struct {
