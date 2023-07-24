@@ -79,7 +79,12 @@ func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to get records error= %w", err))
 	}
 
-	namespaces, err := c.Models.Namespaces.GetUserNamespaces(u.ID)
+	ids, err := c.Models.UserNamespace.GetNamespaces(u.ID)
+	if err != nil {
+		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.User] failed to get ids error= %w", err))
+	}
+
+	namespaces, err := c.Models.Namespaces.GetByIDs(ids)
 	if err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.User] failed to get namespaces error= %w", err))
 	}
