@@ -15,13 +15,13 @@ func (m Middleware) UserNamespace(ctx *fiber.Ctx) error {
 		return m.ErrHandler.ErrRecordNotFound(ctx, err)
 	}
 
-	namespaces, err := m.Models.Namespaces.GetUserNamespaces(u.ID)
+	namespaces, err := m.Models.UserNamespace.GetNamespaces(u.ID)
 	if err != nil {
 		return m.ErrHandler.ErrRecordNotFound(ctx, err)
 	}
 
 	for _, item := range namespaces {
-		if item.ID == id {
+		if item == id {
 			return ctx.Next()
 		}
 	}
