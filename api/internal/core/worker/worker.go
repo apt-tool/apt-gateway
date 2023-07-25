@@ -8,6 +8,7 @@ import (
 
 	"github.com/automated-pen-testing/api/internal/config/ftp"
 	"github.com/automated-pen-testing/api/internal/core/ai"
+	"github.com/automated-pen-testing/api/internal/utils/crypto"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/enum"
 	"github.com/automated-pen-testing/api/pkg/models"
@@ -49,11 +50,15 @@ func (w worker) work() error {
 		if err != nil {
 			log.Println(fmt.Errorf("[worker.work] failed to get attacks error=%w", err))
 
+			w.exit(id)
+
 			continue
 		}
 
 		if er := json.NewDecoder(rsp.Body).Decode(&manifests); er != nil {
 			log.Println(fmt.Errorf("[worker.work] failed to parse attacks error=%w", er))
+
+			w.exit(id)
 
 			continue
 		}
@@ -92,6 +97,8 @@ func (w worker) work() error {
 
 				continue
 			}
+
+			docs = append(docs, doc)
 		}
 
 		// perform each attack
@@ -115,8 +122,14 @@ func (w worker) work() error {
 				continue
 			}
 
+			address := fmt.Sprintf("%s/execute", w.cfg.Host)
+			headers := []string{
+				"Content-Type:application/json",
+				fmt.Sprintf("x-token:%s", crypto.GetMD5Hash(w.cfg.Secret)),
+			}
+
 			// update document based of response
-			if response, httpError := w.client.Post(w.cfg.Host, &buffer, fmt.Sprintf("x-token:%s", w.cfg.Secret)); httpError != nil {
+			if response, httpError := w.client.Post(address, &buffer, headers...); httpError != nil {
 				log.Println(fmt.Errorf("[worker.work] failed to execute script error=%w", httpError))
 
 				doc.Status = enum.StatusFailed

@@ -56,6 +56,8 @@ func (p *Pool) Register() {
 		}.work()
 	}
 
+	go p.update()
+
 	log.Printf("[worker.Register] started %d workers\n", p.capacity)
 }
 

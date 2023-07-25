@@ -9,7 +9,7 @@ func (a AI) GetAttacks(list []string) []string {
 
 	// logic goes here (now it's random)
 	for _, item := range list {
-		if rand.Intn(10) > 7 {
+		if rand.Intn(10) > 2 {
 			records = append(records, item)
 		}
 	}

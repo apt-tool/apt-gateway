@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -48,7 +49,9 @@ func (h Handler) List(ctx *fiber.Ctx) error {
 	list := make([]string, 0)
 
 	for _, e := range entries {
-		list = append(list, e.Name())
+		if e.Name() != "NOTE.txt" {
+			list = append(list, strings.Replace(e.Name(), ".sh", "", 1))
+		}
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(list)

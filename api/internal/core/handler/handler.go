@@ -36,7 +36,7 @@ func (h Handler) process(ctx *fiber.Ctx) error {
 
 // Register core apis
 func (h Handler) Register(app *fiber.App) {
-	app.Get("/:project_id", h.secure, h.process)
+	app.Get("/api/:project_id", h.process)
 	app.Get("/health", func(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusOK)
 	})
