@@ -49,6 +49,7 @@ func (p ProjectRequest) ToModel(namespaceID uint, creator string) *project.Proje
 		Name:        p.Name,
 		Host:        p.Host,
 		Port:        p.Port,
+		Description: p.Description,
 		HTTPSecure:  p.HTTPSecure,
 		Creator:     creator,
 		NamespaceID: namespaceID,
