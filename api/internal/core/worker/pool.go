@@ -43,9 +43,7 @@ func (p *Pool) update() {
 }
 
 func (p *Pool) Register() {
-	aiInstance := ai.AI{
-		Models: p.models,
-	}
+	aiInstance := ai.AI{}
 
 	for i := 0; i < p.capacity; i++ {
 		go worker{

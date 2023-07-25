@@ -55,12 +55,7 @@ func (w worker) work() {
 		}
 
 		// get attacks from ai module
-		attacks, er := w.ai.GetAttacks()
-		if er != nil {
-			log.Println(fmt.Errorf("[worker.work] failed to call ai error=%w", er))
-
-			w.exit(id)
-		}
+		attacks := w.ai.GetAttacks(nil)
 
 		docs := make([]*document.Document, 0)
 
@@ -68,10 +63,9 @@ func (w worker) work() {
 		for _, attack := range attacks {
 			// create document
 			doc := &document.Document{
-				ProjectID:     projectID,
-				InstructionID: attack.ID,
-				Instruction:   attack,
-				Status:        enum.StatusInit,
+				ProjectID:   projectID,
+				Instruction: attack,
+				Status:      enum.StatusInit,
 			}
 
 			if err := w.models.Documents.Create(doc); err != nil {
@@ -90,7 +84,7 @@ func (w worker) work() {
 			// create ftp request
 			tmp := executeRequest{
 				Param:      project.Host,
-				Path:       doc.Instruction.Path,
+				Path:       doc.Instruction,
 				DocumentID: doc.ID,
 			}
 
