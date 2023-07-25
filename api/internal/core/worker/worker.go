@@ -24,24 +24,43 @@ type worker struct {
 	ai      *ai.AI
 }
 
-// executeRequest is used to call ftp system
-type executeRequest struct {
-	Param      string `json:"param"`
-	Path       string `json:"path"`
-	DocumentID uint   `json:"document_id"`
-}
+type (
+	// executeRequest is used to call ftp system
+	executeRequest struct {
+		Param      string `json:"param"`
+		Path       string `json:"path"`
+		DocumentID uint   `json:"document_id"`
+	}
+)
 
 // work method will do the logic of penetration testing
-func (w worker) work() {
+func (w worker) work() error {
 	for {
 		// get project id from channel
 		id := <-w.channel
 
 		projectID := uint(id)
 
+		// manifests
+		manifests := make([]string, 0)
+
+		// make http request to ftp client in order to get attacks
+		rsp, err := w.client.Get(w.cfg.Host)
+		if err != nil {
+			log.Println(fmt.Errorf("[worker.work] failed to get attacks error=%w", err))
+
+			continue
+		}
+
+		if er := json.NewDecoder(rsp.Body).Decode(&manifests); er != nil {
+			log.Println(fmt.Errorf("[worker.work] failed to parse attacks error=%w", er))
+
+			continue
+		}
+
 		// remove all used documents
-		if err := w.models.Documents.Delete(projectID); err != nil {
-			log.Println(fmt.Errorf("[worker.work] failed to remove documents error=%w", err))
+		if er := w.models.Documents.Delete(projectID); er != nil {
+			log.Println(fmt.Errorf("[worker.work] failed to remove documents error=%w", er))
 
 			w.exit(id)
 		}
@@ -55,7 +74,7 @@ func (w worker) work() {
 		}
 
 		// get attacks from ai module
-		attacks := w.ai.GetAttacks(nil)
+		attacks := w.ai.GetAttacks(manifests)
 
 		docs := make([]*document.Document, 0)
 
@@ -68,8 +87,8 @@ func (w worker) work() {
 				Status:      enum.StatusInit,
 			}
 
-			if err := w.models.Documents.Create(doc); err != nil {
-				log.Println(fmt.Errorf("[worker.work] failed to create document error=%w", err))
+			if e := w.models.Documents.Create(doc); e != nil {
+				log.Println(fmt.Errorf("[worker.work] failed to create document error=%w", e))
 
 				continue
 			}
@@ -90,8 +109,8 @@ func (w worker) work() {
 
 			// send ftp request
 			var buffer bytes.Buffer
-			if err := json.NewEncoder(&buffer).Encode(tmp); err != nil {
-				log.Println(fmt.Errorf("[worker.work] failed to create request error=%w", err))
+			if e := json.NewEncoder(&buffer).Encode(tmp); e != nil {
+				log.Println(fmt.Errorf("[worker.work] failed to create request error=%w", e))
 
 				continue
 			}
