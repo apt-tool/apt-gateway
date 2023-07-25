@@ -36,8 +36,7 @@ func (c core) GetByID(projectID uint) (*Project, error) {
 
 	query := c.db.
 		First(&project, "id = ?", projectID).
-		Preload("Documents").
-		Preload("Documents.Instructions")
+		Preload("Documents")
 	if err := query.Error; err != nil {
 		return nil, fmt.Errorf("[db.Project.Get] failed to get record error=%w", err)
 	}

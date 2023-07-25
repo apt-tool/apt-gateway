@@ -16,7 +16,7 @@ type DocumentResponse struct {
 
 func (d DocumentResponse) DTO(document *document.Document) *DocumentResponse {
 	d.ID = document.ID
-	d.Instruction = document.Instruction.Name
+	d.Instruction = document.Instruction
 	d.Status = document.Status
 	d.CreatedAt = document.CreatedAt
 

@@ -2,7 +2,6 @@ package document
 
 import (
 	"github.com/automated-pen-testing/api/pkg/enum"
-	"github.com/automated-pen-testing/api/pkg/models/instruction"
 
 	"gorm.io/gorm"
 )
@@ -10,9 +9,8 @@ import (
 // Document represents core log files
 type Document struct {
 	gorm.Model
-	ProjectID     uint
-	InstructionID uint
-	LogFile       string
-	Status        enum.Status
-	Instruction   *instruction.Instruction
+	ProjectID   uint
+	LogFile     string
+	Instruction string
+	Status      enum.Status
 }
