@@ -49,6 +49,8 @@ func (r Register) Create(app *fiber.App) {
 	// viewer routes
 	viewerRoutes := auth.Group("/")
 
+	viewerRoutes.Get("/profile", ctl.GetUser)
+	viewerRoutes.Post("/profile", ctl.UpdateUser)
 	viewerRoutes.Get("/namespaces", ctl.GetUserNamespaces)
 	viewerRoutes.Get("/namespaces/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
 	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.GetProject)
@@ -57,8 +59,6 @@ func (r Register) Create(app *fiber.App) {
 	// user routes
 	userRoutes := auth.Group("/user")
 
-	userRoutes.Get("/profile", ctl.GetUser)
-	userRoutes.Post("/profile", ctl.UpdateUser)
 	userRoutes.Post("/namespaces/:namespace_id/projects", mid.UserNamespace, ctl.CreateProject)
 	userRoutes.Post("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.ExecuteProject)
 	userRoutes.Delete("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.DeleteProject)

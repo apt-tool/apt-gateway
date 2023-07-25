@@ -11,6 +11,7 @@ type Interface interface {
 	Create(user *User) error
 	Delete(userID uint) error
 	Update(userID uint, user *User) error
+	UpdateInfo(username string, newName string) error
 	Get() ([]*User, error)
 	GetByID(userID uint) (*User, error)
 	GetByIDs(userIDs []uint) ([]*User, error)
@@ -36,6 +37,14 @@ func (c core) Create(user *User) error {
 
 func (c core) Delete(userID uint) error {
 	return c.db.Delete(&User{}, "id = ?", userID).Error
+}
+
+func (c core) UpdateInfo(username string, newName string) error {
+	return c.db.
+		Model(&User{}).
+		Update("username", newName).
+		Where("username = ?", username).
+		Error
 }
 
 func (c core) Update(userID uint, user *User) error {

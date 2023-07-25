@@ -7,7 +7,6 @@ import (
 
 	"github.com/automated-pen-testing/api/internal/http/request"
 	"github.com/automated-pen-testing/api/internal/http/response"
-	"github.com/automated-pen-testing/api/internal/utils/crypto"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -92,20 +91,11 @@ func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 func (c Controller) UpdateUser(ctx *fiber.Ctx) error {
 	req := new(request.UserRegisterRequest)
 
-	u, err := c.Models.Users.GetByName(ctx.Locals("name").(string))
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to get user error=%w", err))
+	if err := ctx.BodyParser(req); err != nil {
+		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
 	}
 
-	if len(req.Name) > 0 {
-		u.Username = req.Name
-	}
-
-	if len(req.Pass) > 0 {
-		u.Password = crypto.GetMD5Hash(req.Pass)
-	}
-
-	if er := c.Models.Users.Update(u.ID, u); er != nil {
+	if er := c.Models.Users.UpdateInfo(ctx.Locals("name").(string), req.Name); er != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to update user error=%w", er))
 	}
 
