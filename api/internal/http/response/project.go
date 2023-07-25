@@ -7,16 +7,23 @@ import (
 	"github.com/automated-pen-testing/api/pkg/models/project"
 )
 
-type ProjectResponse struct {
-	ID          uint                `json:"id"`
-	Name        string              `json:"name"`
-	Description string              `json:"description"`
-	Host        string              `json:"host"`
-	Creator     string              `json:"creator"`
-	Labels      map[string]string   `json:"labels"`
-	CreatedAt   time.Time           `json:"created_at"`
-	Documents   []*DocumentResponse `json:"documents"`
-}
+type (
+	SetResponse struct {
+		Key   string `json:"key"`
+		Value string `json:"value"`
+	}
+
+	ProjectResponse struct {
+		ID          uint                `json:"id"`
+		Name        string              `json:"name"`
+		Description string              `json:"description"`
+		Host        string              `json:"host"`
+		Creator     string              `json:"creator"`
+		CreatedAt   time.Time           `json:"created_at"`
+		Labels      []*SetResponse      `json:"labels"`
+		Documents   []*DocumentResponse `json:"documents"`
+	}
+)
 
 func (p ProjectResponse) DTO(project *project.Project) *ProjectResponse {
 	p.ID = project.ID
@@ -27,10 +34,13 @@ func (p ProjectResponse) DTO(project *project.Project) *ProjectResponse {
 
 	p.Host = p.createHost(project.Host, project.Port, project.HTTPSecure)
 
-	p.Labels = make(map[string]string)
+	list1 := make([]*SetResponse, 0)
 
 	for _, item := range project.Labels {
-		p.Labels[item.Key] = item.Value
+		list1 = append(list1, &SetResponse{
+			Key:   item.Key,
+			Value: item.Value,
+		})
 	}
 
 	list := make([]*DocumentResponse, 0)
@@ -39,6 +49,7 @@ func (p ProjectResponse) DTO(project *project.Project) *ProjectResponse {
 		list = append(list, DocumentResponse{}.DTO(item))
 	}
 
+	p.Labels = list1
 	p.Documents = list
 
 	return &p
