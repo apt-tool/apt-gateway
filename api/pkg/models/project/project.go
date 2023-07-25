@@ -16,10 +16,16 @@ type (
 		HTTPSecure  bool
 		Port        int
 		NamespaceID uint
-		Endpoints   []string
+		Endpoints   []*EndpointSet       `gorm:"foreignKey:project_id"`
 		Labels      []*LabelSet          `gorm:"foreignKey:project_id"`
 		Params      []*ParamSet          `gorm:"foreignKey:project_id"`
 		Documents   []*document.Document `gorm:"foreignKey:project_id"`
+	}
+
+	EndpointSet struct {
+		gorm.Model
+		ProjectID uint
+		Endpoint  string
 	}
 
 	ParamSet struct {

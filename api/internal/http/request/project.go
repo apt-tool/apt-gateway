@@ -16,6 +16,7 @@ type ProjectRequest struct {
 func (p ProjectRequest) ToModel(namespaceID uint, creator string) *project.Project {
 	params := make([]*project.ParamSet, 0)
 	labels := make([]*project.LabelSet, 0)
+	endpoints := make([]*project.EndpointSet, 0)
 
 	for _, item := range p.Params {
 		params = append(params, &project.ParamSet{
@@ -31,15 +32,21 @@ func (p ProjectRequest) ToModel(namespaceID uint, creator string) *project.Proje
 		})
 	}
 
+	for _, item := range p.Endpoints {
+		endpoints = append(endpoints, &project.EndpointSet{
+			Endpoint: item,
+		})
+	}
+
 	return &project.Project{
 		Name:        p.Name,
 		Host:        p.Host,
 		Port:        p.Port,
 		HTTPSecure:  p.HTTPSecure,
-		Endpoints:   p.Endpoints,
 		Creator:     creator,
 		NamespaceID: namespaceID,
 		Params:      params,
 		Labels:      labels,
+		Endpoints:   endpoints,
 	}
 }
