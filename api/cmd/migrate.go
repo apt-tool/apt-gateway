@@ -29,6 +29,7 @@ func (m Migrate) Do() {
 		&user_namespace.UserNamespace{},
 		&project.Project{},
 		&project.ParamSet{},
+		&project.LabelSet{},
 		&user.User{},
 	}
 

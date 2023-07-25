@@ -17,12 +17,19 @@ type (
 		Port        int
 		NamespaceID uint
 		Endpoints   []string
-		Labels      []*ParamSet          `gorm:"foreignKey:project_id"`
+		Labels      []*LabelSet          `gorm:"foreignKey:project_id"`
 		Params      []*ParamSet          `gorm:"foreignKey:project_id"`
 		Documents   []*document.Document `gorm:"foreignKey:project_id"`
 	}
 
 	ParamSet struct {
+		gorm.Model
+		ProjectID uint
+		Key       string
+		Value     string
+	}
+
+	LabelSet struct {
 		gorm.Model
 		ProjectID uint
 		Key       string
