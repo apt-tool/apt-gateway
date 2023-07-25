@@ -42,8 +42,8 @@ func (c core) Delete(userID uint) error {
 func (c core) UpdateInfo(username string, newName string) error {
 	return c.db.
 		Model(&User{}).
-		Update("username", newName).
 		Where("username = ?", username).
+		Update("username", newName).
 		Error
 }
 
