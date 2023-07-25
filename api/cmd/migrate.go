@@ -8,7 +8,6 @@ import (
 	"github.com/automated-pen-testing/api/internal/utils/crypto"
 	"github.com/automated-pen-testing/api/pkg/enum"
 	"github.com/automated-pen-testing/api/pkg/models/document"
-	"github.com/automated-pen-testing/api/pkg/models/instruction"
 	"github.com/automated-pen-testing/api/pkg/models/namespace"
 	"github.com/automated-pen-testing/api/pkg/models/project"
 	"github.com/automated-pen-testing/api/pkg/models/user"
@@ -26,10 +25,10 @@ type Migrate struct {
 func (m Migrate) Do() {
 	models := []interface{}{
 		&document.Document{},
-		&instruction.Instruction{},
 		&namespace.Namespace{},
 		&user_namespace.UserNamespace{},
 		&project.Project{},
+		&project.ParamSet{},
 		&user.User{},
 	}
 
