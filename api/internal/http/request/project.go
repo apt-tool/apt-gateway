@@ -2,16 +2,23 @@ package request
 
 import "github.com/automated-pen-testing/api/pkg/models/project"
 
-type ProjectRequest struct {
-	Name        string            `json:"name"`
-	Description string            `json:"description"`
-	Host        string            `json:"host"`
-	Port        int               `json:"port"`
-	HTTPSecure  bool              `json:"http_secure"`
-	Endpoints   []string          `json:"endpoints"`
-	Labels      map[string]string `json:"labels"`
-	Params      map[string]string `json:"params"`
-}
+type (
+	SetRequest struct {
+		Key   string `json:"key"`
+		Value string `json:"value"`
+	}
+
+	ProjectRequest struct {
+		Name        string       `json:"name"`
+		Description string       `json:"description"`
+		Host        string       `json:"host"`
+		Port        int          `json:"port"`
+		HTTPSecure  bool         `json:"http_secure"`
+		Endpoints   []string     `json:"endpoints,omitempty"`
+		Labels      []SetRequest `json:"labels,omitempty"`
+		Params      []SetRequest `json:"params,omitempty"`
+	}
+)
 
 func (p ProjectRequest) ToModel(namespaceID uint, creator string) *project.Project {
 	params := make([]*project.ParamSet, 0)
@@ -20,15 +27,15 @@ func (p ProjectRequest) ToModel(namespaceID uint, creator string) *project.Proje
 
 	for _, item := range p.Params {
 		params = append(params, &project.ParamSet{
-			Key:   item,
-			Value: p.Params[item],
+			Key:   item.Key,
+			Value: item.Value,
 		})
 	}
 
 	for _, item := range p.Labels {
 		labels = append(labels, &project.LabelSet{
-			Key:   item,
-			Value: p.Params[item],
+			Key:   item.Key,
+			Value: item.Value,
 		})
 	}
 
