@@ -9,6 +9,7 @@ import (
 	"github.com/automated-pen-testing/instructions/internal/http"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 func main() {
@@ -19,6 +20,8 @@ func main() {
 
 	// create new fiber app
 	app := fiber.New()
+
+	app.Use(cors.New())
 
 	// create new handler
 	h := http.Handler{
