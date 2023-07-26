@@ -70,9 +70,9 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 func (c Controller) DownloadProjectDocument(ctx *fiber.Ctx) error {
 	documentID, _ := ctx.ParamsInt("document_id", 0)
 
-	url := fmt.Sprintf("%s/download?path=%d", c.Config.FTP.Host, documentID)
+	cypher := crypto.GetMD5Hash(fmt.Sprintf("%s%d", c.Config.FTP.Access, documentID))
 
-	ctx.Request().Header.Set("x-secure", crypto.GetMD5Hash(fmt.Sprintf("%s%d", c.Config.FTP.Secret, documentID)))
+	url := fmt.Sprintf("%s/download?path=%d&token=%s", c.Config.FTP.Host, documentID, cypher)
 
 	return ctx.Redirect(url, fiber.StatusPermanentRedirect)
 }

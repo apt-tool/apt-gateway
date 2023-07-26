@@ -20,7 +20,7 @@ func (h Handler) AccessMiddleware(ctx *fiber.Ctx) error {
 	path := ctx.Query("path", "")
 	cypher := crypto.GetMD5Hash(fmt.Sprintf("%s%s", h.AccessKey, path))
 
-	if cypher != ctx.Get("x-secure") {
+	if cypher != ctx.Query("token", "") {
 		return fiber.ErrForbidden
 	}
 
