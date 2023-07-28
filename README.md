@@ -1,18 +1,14 @@
-# Automated Pen-Testing
+# Automated Penetration Testing
 
-Implementing an ```Automated Penetration Testing``` tool in order to execute
-a pen-test automatically over your cloud cluster to test your ```SaaS``` applications.
+![](https://img.shields.io/badge/language-Golang-lightblue)
+![](https://img.shields.io/badge/go_version-1.20-blue)
+![](https://img.shields.io/badge/topic-Security-red)
+![](https://img.shields.io/badge/architecture-Microservice-yellow)
+![](https://img.shields.io/badge/tests-Passed-darkgreen)
+![](https://img.shields.io/badge/virtualization-Docker-blue)
+![](https://img.shields.io/badge/version-0.0.1-green)
 
-## Components
-
-### API
-
-Backend service in order to manage user requests. Implemented as a Restful API service.
-
-### Runner
-
-Executor service in order to run instructions scripts based on ML model outputs.
-
-### UI
-
-Project dashboard which is user interface.
+Implementing an ```Automated Penetration Testing``` (aka ```APT```) software in order to perform
+pen-tests automatically over your cloud cluster to test our ```SaaS``` applications. With ```APT```
+you can check your system security when facing unwanted attacks. This project is my ```bachelor```
+project at ```Amirkabir University of Tehran```.
