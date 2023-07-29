@@ -8,7 +8,23 @@
 ![](https://img.shields.io/badge/virtualization-Docker-blue)
 ![](https://img.shields.io/badge/version-0.0.1-green)
 
-Implementing an ```Automated Penetration Testing``` (aka ```APT```) software in order to perform
-pen-tests automatically over your cloud cluster to test our ```SaaS``` applications. With ```APT```
-you can check your system security when facing unwanted attacks. This project is my ```bachelor```
-project at ```Amirkabir University of Tehran```.
+Implementing an ```Automated Penetration Testing``` (aka ```APT```) application in order to perform
+pen-tests automatically over cloud cluster to test our ```SaaS``` applications. With ```APT```
+you can check your system security when facing unwanted attacks. This project is my __bachelor__
+project at __Amirkabir University of Tehran__.
+
+## Deploy
+
+### images
+
+## Architecture
+
+## Configs
+
+## API
+
+## Core
+
+## FTP
+
+### scripts
