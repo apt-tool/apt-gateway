@@ -2,9 +2,8 @@
 FROM golang:1.20-alpine as builder
 
 # labels for swarm and other managers
-LABEL app="automated-pen-testing-api"
+LABEL app="automated-pen-testing-ftp"
 LABEL docker_file_version="v0.0.1"
-LABEL database_driver="mysql"
 
 # maintainer
 MAINTAINER amirhossein.najafizadeh21@gmail.com
@@ -14,7 +13,7 @@ WORKDIR /app
 
 # env variables
 ENV VERSION="v0.0.1"
-ENV APP="automated-pen-testing-api"
+ENV APP="automated-pen-testing-ftp"
 
 # copy go.mod and go.sum
 COPY go.mod go.sum ./
@@ -40,5 +39,5 @@ COPY --from=builder /app/main main
 # expose port 8080
 EXPOSE 8080
 
-# start http service
+# start ftp service
 CMD ./main

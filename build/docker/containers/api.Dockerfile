@@ -41,4 +41,4 @@ COPY --from=builder /app/main main
 EXPOSE 8080
 
 # start http service
-CMD ./main --port 8080 --config "config.yml"
+CMD ./main api

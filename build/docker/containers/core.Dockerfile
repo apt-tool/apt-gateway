@@ -2,7 +2,7 @@
 FROM golang:1.20-alpine as builder
 
 # labels for swarm and other managers
-LABEL app="automated-pen-testing-runner"
+LABEL app="automated-pen-testing-core"
 LABEL docker_file_version="v0.0.1"
 LABEL database_driver="mysql"
 
@@ -14,7 +14,7 @@ WORKDIR /app
 
 # env variables
 ENV VERSION="v0.0.1"
-ENV APP="automated-pen-testing-runner"
+ENV APP="automated-pen-testing-core"
 
 # copy go.mod and go.sum
 COPY go.mod go.sum ./
@@ -40,5 +40,5 @@ COPY --from=builder /app/main main
 # expose port 8080
 EXPOSE 8080
 
-# start http service
-CMD ./main --port 8080 --config "config.yml"
+# start core service
+CMD ./main core
