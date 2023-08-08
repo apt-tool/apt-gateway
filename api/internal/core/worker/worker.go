@@ -8,6 +8,7 @@ import (
 
 	"github.com/automated-pen-testing/api/internal/config/ftp"
 	"github.com/automated-pen-testing/api/internal/core/ai"
+	"github.com/automated-pen-testing/api/internal/core/scanner"
 	"github.com/automated-pen-testing/api/internal/utils/crypto"
 	"github.com/automated-pen-testing/api/pkg/client"
 	"github.com/automated-pen-testing/api/pkg/enum"
@@ -78,8 +79,11 @@ func (w worker) work() error {
 			w.exit(id)
 		}
 
+		// start scanner
+		report, err := scanner.Scan(fmt.Sprintf("%s:%d", project.Host, project.Port))
+
 		// get attacks from ai module
-		attacks := w.ai.GetAttacks(manifests)
+		attacks := w.ai.GetAttacks(manifests, report.Vulnerabilities)
 
 		docs := make([]*document.Document, 0)
 
