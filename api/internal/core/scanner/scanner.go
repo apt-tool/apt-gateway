@@ -1,7 +1,6 @@
 package scanner
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -34,9 +33,9 @@ func Scan(host, name string) ([]string, error) {
 		return r.vulnerabilities, err
 	}
 
-	// convert our json object into our report
-	if er := json.Unmarshal(context, r); er != nil {
-		return r.vulnerabilities, err
+	// convert type to our report
+	if er := convert(context, r); er != nil {
+		return r.vulnerabilities, er
 	}
 
 	return r.vulnerabilities, nil
