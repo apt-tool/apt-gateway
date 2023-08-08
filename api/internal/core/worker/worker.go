@@ -86,13 +86,13 @@ func (w worker) work() error {
 		}
 
 		// start scanner
-		report, err := scanner.Scan(fmt.Sprintf("%s://%s:%d", prefix, project.Host, project.Port))
+		vulnerabilities, err := scanner.Scan(fmt.Sprintf("%s://%s:%d", prefix, project.Host, project.Port), project.Name)
 		if err != nil {
 			log.Println(fmt.Errorf("[worker.work] failed to scan host error=%w", err))
 		}
 
 		// get attacks from ai module
-		attacks := w.ai.GetAttacks(manifests, report.Vulnerabilities)
+		attacks := w.ai.GetAttacks(manifests, vulnerabilities)
 
 		docs := make([]*document.Document, 0)
 
