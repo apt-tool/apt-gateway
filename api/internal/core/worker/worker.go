@@ -79,8 +79,14 @@ func (w worker) work() error {
 			w.exit(id)
 		}
 
+		// set http or https
+		prefix := "http"
+		if project.HTTPSecure {
+			prefix = "http"
+		}
+
 		// start scanner
-		report, err := scanner.Scan(fmt.Sprintf("%s:%d", project.Host, project.Port))
+		report, err := scanner.Scan(fmt.Sprintf("%s://%s:%d", prefix, project.Host, project.Port))
 
 		// get attacks from ai module
 		attacks := w.ai.GetAttacks(manifests, report.Vulnerabilities)
