@@ -1,3 +1,0 @@
-[ftp.docs]
-description: docs are documents execution results which can be
-accesses from download endpoint

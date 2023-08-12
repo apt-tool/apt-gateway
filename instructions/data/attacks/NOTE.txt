@@ -1,8 +1,0 @@
-[ftp.attacks]
-description: this directory stores the attacks scripts of the system
-each time you perform an execution it will run one of the scripts in this
-directory
-[scripts]
-description: all scripts should get one parameter (the host name) which
-contains an ip address and port, after that they perform an attack and
-the output data will be in docs directory
