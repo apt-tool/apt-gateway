@@ -21,26 +21,12 @@ func main() {
 		log.Fatal(fmt.Errorf("[main] failed in connecting to mysql server error=%w", err))
 	}
 
-	// perform migrations if needed
-	if cfg.MySQL.Migrate {
-		migrateInstance := cmd.Migrate{
-			Cfg: cfg.Migrate,
-			Db:  db,
-		}
-
-		migrateInstance.Do()
-	}
-
 	// create root command
 	root := cobra.Command{}
 
 	// add sub commands to root
 	root.AddCommand(
 		cmd.API{
-			Cfg: cfg,
-			Db:  db,
-		}.Command(),
-		cmd.Core{
 			Cfg: cfg,
 			Db:  db,
 		}.Command(),
