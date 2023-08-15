@@ -3,7 +3,7 @@ package jwt
 import (
 	"time"
 
-	"github.com/apt-tool/apt-gateway/pkg/enum"
+	"github.com/apt-tool/apt-core/pkg/enum"
 )
 
 type Authenticator interface {
