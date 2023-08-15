@@ -1,6 +1,6 @@
 package request
 
-import "github.com/apt-tool/apt-gateway/pkg/models/project"
+import "github.com/apt-tool/apt-core/pkg/models/project"
 
 type (
 	SetRequest struct {

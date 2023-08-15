@@ -3,7 +3,7 @@ package response
 import (
 	"time"
 
-	"github.com/apt-tool/apt-gateway/pkg/models/namespace"
+	"github.com/apt-tool/apt-core/pkg/models/namespace"
 )
 
 type NamespaceResponse struct {

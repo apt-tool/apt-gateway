@@ -1,6 +1,6 @@
 package request
 
-import "github.com/apt-tool/apt-gateway/pkg/models/namespace"
+import "github.com/apt-tool/apt-core/pkg/models/namespace"
 
 type NamespaceRequest struct {
 	Name string `json:"name"`

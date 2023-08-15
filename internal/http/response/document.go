@@ -3,8 +3,8 @@ package response
 import (
 	"time"
 
-	"github.com/apt-tool/apt-gateway/pkg/enum"
-	"github.com/apt-tool/apt-gateway/pkg/models/document"
+	"github.com/apt-tool/apt-core/pkg/enum"
+	"github.com/apt-tool/apt-core/pkg/models/document"
 )
 
 type DocumentResponse struct {

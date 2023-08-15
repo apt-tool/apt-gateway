@@ -5,6 +5,8 @@ go 1.20
 require (
 	github.com/amirhnajafiz/apt-scanner v0.0.0-20230808083900-07f66a9da064 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/apt-tool/apt-core v0.0.0-20230815063435-900585984ba2 // indirect
+	github.com/apt-tool/apt-scanner v0.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/structs v1.1.0 // indirect

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/apt-tool/apt-gateway/pkg/models/project"
+	"github.com/apt-tool/apt-core/pkg/models/project"
 )
 
 type (
