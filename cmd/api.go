@@ -56,6 +56,6 @@ func (a API) main() {
 
 	// starting app on choosing port
 	if er := app.Listen(fmt.Sprintf(":%d", a.Cfg.HTTP.Port)); er != nil {
-		log.Fatalf("[api] failed to start api server error=%w", er)
+		log.Fatalf("[api] failed to start api server error=%v", er)
 	}
 }

@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/apt-tool/apt-gateway/internal/config/core"
 	"github.com/apt-tool/apt-gateway/internal/config/ftp"
 	"github.com/apt-tool/apt-gateway/internal/config/http"
 	"github.com/apt-tool/apt-gateway/internal/config/migration"
@@ -12,11 +11,6 @@ import (
 
 func Default() Config {
 	return Config{
-		Core: core.Config{
-			Preemptive: false,
-			Port:       8080,
-			Enable:     false,
-		},
 		HTTP: http.Config{
 			Port: 8080,
 			Core: "",

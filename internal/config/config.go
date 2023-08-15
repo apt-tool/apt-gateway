@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/apt-tool/apt-gateway/internal/config/core"
 	"github.com/apt-tool/apt-gateway/internal/config/ftp"
 	"github.com/apt-tool/apt-gateway/internal/config/http"
 	"github.com/apt-tool/apt-gateway/internal/config/migration"
@@ -20,7 +19,6 @@ import (
 )
 
 type Config struct {
-	Core    core.Config      `koanf:"core"`
 	HTTP    http.Config      `koanf:"http"`
 	JWT     jwt.Config       `koanf:"jwt"`
 	Redis   redis.Config     `koanf:"redis"`
