@@ -54,7 +54,7 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 	projectID, _ := ctx.ParamsInt("project_id", 0)
 	url := fmt.Sprintf("%s/%d", c.Config.HTTP.Core, projectID)
 
-	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.Core.Secret))
+	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.HTTP.CoreSecret))
 	if err != nil {
 		return c.ErrHandler.ErrLogical(ctx, fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err))
 	}

@@ -12,8 +12,9 @@ import (
 func Default() Config {
 	return Config{
 		HTTP: http.Config{
-			Port: 8080,
-			Core: "",
+			Port:       8080,
+			Core:       "",
+			CoreSecret: "",
 		},
 		JWT: jwt.Config{
 			PrivateKey: "private",

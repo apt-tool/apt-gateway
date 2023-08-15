@@ -6,7 +6,8 @@ import (
 	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
 	"github.com/apt-tool/apt-gateway/pkg/client"
-	"github.com/apt-tool/apt-gateway/pkg/models"
+
+	"github.com/apt-tool/apt-core/pkg/models"
 )
 
 type Controller struct {
