@@ -6,7 +6,6 @@ import (
 
 	"github.com/apt-tool/apt-gateway/internal/config/ftp"
 	"github.com/apt-tool/apt-gateway/internal/config/http"
-	"github.com/apt-tool/apt-gateway/internal/config/migration"
 	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/storage/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
@@ -19,12 +18,11 @@ import (
 )
 
 type Config struct {
-	HTTP    http.Config      `koanf:"http"`
-	JWT     jwt.Config       `koanf:"jwt"`
-	Redis   redis.Config     `koanf:"redis"`
-	MySQL   sql.Config       `koanf:"mysql"`
-	Migrate migration.Config `koanf:"migrate"`
-	FTP     ftp.Config       `koanf:"ftp"`
+	HTTP  http.Config  `koanf:"http"`
+	JWT   jwt.Config   `koanf:"jwt"`
+	Redis redis.Config `koanf:"redis"`
+	MySQL sql.Config   `koanf:"mysql"`
+	FTP   ftp.Config   `koanf:"ftp"`
 }
 
 func Load(path string) Config {

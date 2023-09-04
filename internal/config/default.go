@@ -3,7 +3,6 @@ package config
 import (
 	"github.com/apt-tool/apt-gateway/internal/config/ftp"
 	"github.com/apt-tool/apt-gateway/internal/config/http"
-	"github.com/apt-tool/apt-gateway/internal/config/migration"
 	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/storage/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
@@ -31,9 +30,6 @@ func Default() Config {
 			Pass:     "",
 			Database: "automated-pen-testing",
 			Migrate:  false,
-		},
-		Migrate: migration.Config{
-			Enable: false,
 		},
 		FTP: ftp.Config{
 			Host:   "",
