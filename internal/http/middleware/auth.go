@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -10,7 +11,12 @@ import (
 func (m Middleware) Auth(ctx *fiber.Ctx) error {
 	if token := ctx.Get("x-token", ""); token != "" {
 		if name, err := m.JWTAuthenticator.ParseToken(token); err == nil {
-			ctx.Locals("name", name)
+			user, er := m.Models.Users.GetByName(name)
+			if er != nil {
+				return m.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("user not found"))
+			}
+
+			ctx.Locals("user", user)
 
 			return ctx.Next()
 		} else {

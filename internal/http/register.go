@@ -5,17 +5,16 @@ import (
 	"github.com/apt-tool/apt-gateway/internal/http/controller"
 	"github.com/apt-tool/apt-gateway/internal/http/controller/handler"
 	"github.com/apt-tool/apt-gateway/internal/http/middleware"
-	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
 	"github.com/apt-tool/apt-gateway/pkg/client"
 
 	"github.com/apt-tool/apt-core/pkg/models"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 type Register struct {
 	Config          config.Config
-	RedisConnector  redis.Connector
 	ModelsInterface *models.Interface
 }
 
@@ -23,20 +22,19 @@ func (r Register) Create(app *fiber.App) {
 	// create new jwt authenticator
 	authenticator := jwt.New(r.Config.JWT)
 
+	// create an error handler for http service
 	errHandler := handler.ErrorHandler{DevMode: r.Config.HTTP.DevMode}
 
 	// create middleware and controller
 	mid := middleware.Middleware{
 		JWTAuthenticator: authenticator,
 		Models:           r.ModelsInterface,
-		RedisConnector:   r.RedisConnector,
 		ErrHandler:       errHandler,
 	}
 	ctl := controller.Controller{
 		Config:           r.Config,
 		JWTAuthenticator: authenticator,
 		Models:           r.ModelsInterface,
-		RedisConnector:   r.RedisConnector,
 		ErrHandler:       errHandler,
 		Client:           client.NewClient(),
 	}
@@ -56,7 +54,7 @@ func (r Register) Create(app *fiber.App) {
 	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.GetProject)
 	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace, ctl.DownloadProjectDocument)
 
-	// user routesxx
+	// user routes
 	userRoutes := auth.Group("/user")
 
 	userRoutes.Post("/namespaces/:namespace_id/projects", mid.UserNamespace, ctl.CreateProject)

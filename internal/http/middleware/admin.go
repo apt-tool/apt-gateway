@@ -2,23 +2,18 @@ package middleware
 
 import (
 	"errors"
-	"fmt"
-	"strconv"
 
 	"github.com/apt-tool/apt-core/pkg/enum"
+	"github.com/apt-tool/apt-core/pkg/models/user"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 // Admin middleware checks the user admin role.
 func (m Middleware) Admin(ctx *fiber.Ctx) error {
-	tmp, err := m.RedisConnector.Get(ctx.Locals("name").(string))
-	if err != nil {
-		return m.ErrHandler.ErrUnauthorized(ctx, fmt.Errorf("token expired error=%v", err))
-	}
+	u := ctx.Locals("user").(*user.User)
 
-	role, _ := strconv.Atoi(tmp)
-
-	if role == int(enum.RoleAdmin) {
+	if u.Role == enum.RoleAdmin {
 		return ctx.Next()
 	}
 
