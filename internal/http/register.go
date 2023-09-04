@@ -40,42 +40,54 @@ func (r Register) Create(app *fiber.App) {
 	}
 
 	// register endpoints
+	// login endpoint
 	app.Post("/login", ctl.UserLogin)
 
+	// add auth middleware
 	auth := app.Use(mid.Auth)
 
-	// viewer routes
-	viewerRoutes := auth.Group("/")
+	// user crud
+	user := auth.Group("/user")
+	user.Get("/", ctl.GetUser)
+	user.Post("/", ctl.UpdateUser)
 
-	viewerRoutes.Get("/profile", ctl.GetUser)
-	viewerRoutes.Post("/profile", ctl.UpdateUser)
-	viewerRoutes.Get("/namespaces", ctl.GetUserNamespaces)
-	viewerRoutes.Get("/namespaces/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
-	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.GetProject)
-	viewerRoutes.Get("/namespaces/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace, ctl.DownloadProjectDocument)
-
-	// user routes
-	userRoutes := auth.Group("/user")
-
-	userRoutes.Post("/namespaces/:namespace_id/projects", mid.UserNamespace, ctl.CreateProject)
-	userRoutes.Post("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.ExecuteProject)
-	userRoutes.Delete("/namespaces/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.DeleteProject)
-
-	// admin routes
-	adminRoutes := auth.Use(mid.Admin).Group("/admin")
-
-	users := adminRoutes.Group("/users")
-
+	// users crud
+	users := auth.Use(mid.Admin).Group("/users")
 	users.Get("/", ctl.GetUsersList)
 	users.Post("/", ctl.UserRegister)
 	users.Put("/", ctl.UpdateUserRole)
-	users.Delete("/:user_id", ctl.DeleteUser)
+	users.Delete("/:id", ctl.DeleteUser)
 
-	namespaces := adminRoutes.Group("/namespaces")
-
+	// namespaces crud
+	namespaces := auth.Group("/namespaces")
+	namespaces.Get("/", ctl.GetUserNamespaces)
+	namespaces.Get("/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
+	namespaces.Get("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.GetProject)
+	namespaces.Get("/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace, ctl.DownloadProjectDocument)
 	namespaces.Get("/", ctl.GetNamespaces)
 	namespaces.Post("/", ctl.CreateNamespace)
 	namespaces.Put("/", ctl.UpdateNamespace)
 	namespaces.Get("/:namespace_id", ctl.GetNamespaceUsers)
 	namespaces.Delete("/:namespace_id", ctl.DeleteNamespace)
+
+	// projects crud
+	projects := auth.Group("/projects")
+
+	// viewer routes
+	viewerRoutes := auth.Group("/")
+
+	viewNamespace := viewerRoutes.Group("/namespaces")
+	viewNamespace.Get("/", ctl.GetUserNamespaces)
+	viewNamespace.Get("/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
+	viewNamespace.Get("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.GetProject)
+	viewNamespace.Get("/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace, ctl.DownloadProjectDocument)
+
+	// user routes
+	userRoutes := auth.Group("/user")
+
+	userNamespace := userRoutes.Group("/namespaces")
+
+	userNamespace.Post("/:namespace_id/projects", mid.UserNamespace, ctl.CreateProject)
+	userNamespace.Post("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.ExecuteProject)
+	userNamespace.Delete("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.DeleteProject)
 }
