@@ -7,16 +7,18 @@ import (
 	"github.com/apt-tool/apt-core/pkg/models/user"
 )
 
-type UserRegisterRequest struct {
-	Name string `json:"username"`
-	Pass string `json:"password"`
-	Role int    `json:"role"`
-}
+type (
+	UserRegisterRequest struct {
+		Name string `json:"username"`
+		Pass string `json:"password"`
+		Role int    `json:"role"`
+	}
 
-type UserRoleUpdateRequest struct {
-	UserID uint      `json:"user_id"`
-	Role   enum.Role `json:"role"`
-}
+	UserRoleUpdateRequest struct {
+		UserID uint      `json:"user_id"`
+		Role   enum.Role `json:"role"`
+	}
+)
 
 func (u UserRegisterRequest) Validate() error {
 	if len(u.Name) == 0 {
