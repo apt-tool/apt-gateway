@@ -1,8 +1,6 @@
 package config
 
 import (
-	"github.com/apt-tool/apt-gateway/internal/config/ftp"
-	"github.com/apt-tool/apt-gateway/internal/config/http"
 	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/storage/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
@@ -10,10 +8,15 @@ import (
 
 func Default() Config {
 	return Config{
-		HTTP: http.Config{
+		HTTP: HTTPConfig{
 			Port:       8080,
 			Core:       "",
 			CoreSecret: "",
+		},
+		FTP: FTPConfig{
+			Host:   "",
+			Secret: "",
+			Access: "",
 		},
 		JWT: jwt.Config{
 			PrivateKey: "private",
@@ -30,11 +33,6 @@ func Default() Config {
 			Pass:     "",
 			Database: "automated-pen-testing",
 			Migrate:  false,
-		},
-		FTP: ftp.Config{
-			Host:   "",
-			Secret: "",
-			Access: "",
 		},
 	}
 }

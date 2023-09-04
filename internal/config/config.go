@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/apt-tool/apt-gateway/internal/config/ftp"
-	"github.com/apt-tool/apt-gateway/internal/config/http"
 	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/storage/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
@@ -17,13 +15,28 @@ import (
 	"github.com/tidwall/pretty"
 )
 
-type Config struct {
-	HTTP  http.Config  `koanf:"http"`
-	JWT   jwt.Config   `koanf:"jwt"`
-	Redis redis.Config `koanf:"redis"`
-	MySQL sql.Config   `koanf:"mysql"`
-	FTP   ftp.Config   `koanf:"ftp"`
-}
+type (
+	Config struct {
+		HTTP  HTTPConfig   `koanf:"http"`
+		FTP   FTPConfig    `koanf:"ftp"`
+		JWT   jwt.Config   `koanf:"jwt"`
+		Redis redis.Config `koanf:"redis"`
+		MySQL sql.Config   `koanf:"mysql"`
+	}
+
+	HTTPConfig struct {
+		Port       int    `koanf:"port"`
+		Core       string `koanf:"core"`
+		CoreSecret string `koanf:"core_secret"`
+		DevMode    bool   `koanf:"dev_mode"`
+	}
+
+	FTPConfig struct {
+		Host   string `koanf:"host"`
+		Secret string `koanf:"secret"`
+		Access string `koanf:"access"`
+	}
+)
 
 func Load(path string) Config {
 	var instance Config
