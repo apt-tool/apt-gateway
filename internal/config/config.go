@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/storage/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
 
@@ -17,11 +16,10 @@ import (
 
 type (
 	Config struct {
-		HTTP  HTTPConfig   `koanf:"http"`
-		FTP   FTPConfig    `koanf:"ftp"`
-		JWT   jwt.Config   `koanf:"jwt"`
-		Redis redis.Config `koanf:"redis"`
-		MySQL sql.Config   `koanf:"mysql"`
+		HTTP  HTTPConfig `koanf:"http"`
+		FTP   FTPConfig  `koanf:"ftp"`
+		JWT   jwt.Config `koanf:"jwt"`
+		MySQL sql.Config `koanf:"mysql"`
 	}
 
 	HTTPConfig struct {

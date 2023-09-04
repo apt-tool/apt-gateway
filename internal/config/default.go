@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 	"github.com/apt-tool/apt-gateway/internal/storage/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
 )
@@ -21,10 +20,6 @@ func Default() Config {
 		JWT: jwt.Config{
 			PrivateKey: "private",
 			ExpireTime: 60,
-		},
-		Redis: redis.Config{
-			Host: "localhost:6379",
-			Pass: "",
 		},
 		MySQL: sql.Config{
 			Host:     "127.0.0.1",
