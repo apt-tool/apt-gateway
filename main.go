@@ -6,7 +6,7 @@ import (
 
 	"github.com/apt-tool/apt-gateway/cmd"
 	"github.com/apt-tool/apt-gateway/internal/config"
-	"github.com/apt-tool/apt-gateway/internal/storage/sql"
+	"github.com/apt-tool/apt-gateway/internal/sql"
 
 	"github.com/spf13/cobra"
 )

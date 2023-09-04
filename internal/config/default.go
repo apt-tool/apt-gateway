@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/apt-tool/apt-gateway/internal/storage/sql"
+	"github.com/apt-tool/apt-gateway/internal/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
 )
 

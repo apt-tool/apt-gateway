@@ -6,7 +6,6 @@ import (
 
 	"github.com/apt-tool/apt-gateway/internal/config"
 	"github.com/apt-tool/apt-gateway/internal/http"
-	"github.com/apt-tool/apt-gateway/internal/storage/redis"
 
 	"github.com/apt-tool/apt-core/pkg/models"
 
@@ -33,12 +32,6 @@ func (a API) Command() *cobra.Command {
 }
 
 func (a API) main() {
-	// create redis connection
-	redisConnection, err := redis.New(a.Cfg.Redis)
-	if err != nil {
-		log.Fatal(fmt.Errorf("[api] failed to connect to redis cluster error=%w", err))
-	}
-
 	// create new models interface
 	modelsInstance := models.New(a.Db)
 
@@ -51,7 +44,6 @@ func (a API) main() {
 	// register http
 	http.Register{
 		Config:          a.Cfg,
-		RedisConnector:  redisConnection,
 		ModelsInterface: modelsInstance,
 	}.Create(app)
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/apt-tool/apt-gateway/internal/storage/sql"
+	"github.com/apt-tool/apt-gateway/internal/sql"
 	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
 
 	"github.com/knadh/koanf"
