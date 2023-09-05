@@ -9,8 +9,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// UserRegister will create a new user into system
-func (c Controller) UserRegister(ctx *fiber.Ctx) error {
+// CreateUser will create a new user into system
+func (c Controller) CreateUser(ctx *fiber.Ctx) error {
 	req := new(request.UserRegisterRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
@@ -26,33 +26,6 @@ func (c Controller) UserRegister(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
-}
-
-// UserLogin logs in a user
-func (c Controller) UserLogin(ctx *fiber.Ctx) error {
-	req := new(request.UserRegisterRequest)
-
-	if err := ctx.BodyParser(req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Loing] failed to parse body error=%w", err))
-	}
-
-	if err := req.Validate(); err != nil {
-		return c.ErrHandler.ErrValidation(ctx, fmt.Errorf("[controller.user.Login] failed to validate request error=%w", err))
-	}
-
-	userTmp, err := c.Models.Users.Validate(req.Name, req.Pass)
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Login] username and password don't match error=%w", err))
-	}
-
-	token, _, err := c.JWTAuthenticator.GenerateToken(userTmp.Username, userTmp.Role)
-	if err != nil {
-		return c.ErrHandler.ErrLogical(ctx, fmt.Errorf("[controller.user.Loing] failed to create token error=%w", err))
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(response.Token{
-		Token: token,
-	})
 }
 
 // GetUser profile
