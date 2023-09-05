@@ -60,34 +60,19 @@ func (r Register) Create(app *fiber.App) {
 
 	// namespaces crud
 	namespaces := auth.Group("/namespaces")
-	namespaces.Get("/", ctl.GetUserNamespaces)
-	namespaces.Get("/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
-	namespaces.Get("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.GetProject)
-	namespaces.Get("/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace, ctl.DownloadProjectDocument)
 	namespaces.Get("/", ctl.GetNamespaces)
 	namespaces.Post("/", ctl.CreateNamespace)
 	namespaces.Put("/", ctl.UpdateNamespace)
 	namespaces.Get("/:namespace_id", ctl.GetNamespaceUsers)
 	namespaces.Delete("/:namespace_id", ctl.DeleteNamespace)
+	namespaces.Get("/user", ctl.GetUserNamespaces)
+	namespaces.Get("/user/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
 
 	// projects crud
-	projects := auth.Group("/projects")
-
-	// viewer routes
-	viewerRoutes := auth.Group("/")
-
-	viewNamespace := viewerRoutes.Group("/namespaces")
-	viewNamespace.Get("/", ctl.GetUserNamespaces)
-	viewNamespace.Get("/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
-	viewNamespace.Get("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.GetProject)
-	viewNamespace.Get("/:namespace_id/projects/:project_id/:document_id", mid.UserNamespace, ctl.DownloadProjectDocument)
-
-	// user routes
-	userRoutes := auth.Group("/user")
-
-	userNamespace := userRoutes.Group("/namespaces")
-
-	userNamespace.Post("/:namespace_id/projects", mid.UserNamespace, ctl.CreateProject)
-	userNamespace.Post("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.ExecuteProject)
-	userNamespace.Delete("/:namespace_id/projects/:project_id", mid.UserNamespace, ctl.DeleteProject)
+	projects := auth.Group("/projects/:namespace_id")
+	projects.Post("/", mid.UserNamespace, ctl.CreateProject)
+	projects.Get("/:id", mid.UserNamespace, ctl.GetProject)
+	projects.Post("/:id", mid.UserNamespace, ctl.ExecuteProject)
+	projects.Delete("/:id", mid.UserNamespace, ctl.DeleteProject)
+	projects.Get("/:id/:document_id", mid.UserNamespace, ctl.DownloadProjectDocument)
 }
