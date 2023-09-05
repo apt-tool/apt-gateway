@@ -20,7 +20,9 @@ type (
 		Host        string              `json:"host"`
 		Creator     string              `json:"creator"`
 		CreatedAt   time.Time           `json:"created_at"`
+		Endpoints   []string            `json:"endpoints"`
 		Labels      []*SetResponse      `json:"labels"`
+		Params      []*SetResponse      `json:"params"`
 		Documents   []*DocumentResponse `json:"documents"`
 	}
 )
@@ -34,23 +36,40 @@ func (p ProjectResponse) DTO(project *project.Project) *ProjectResponse {
 
 	p.Host = p.createHost(project.Host, project.Port, project.HTTPSecure)
 
-	list1 := make([]*SetResponse, 0)
+	list := make([]*SetResponse, 0)
 
 	for _, item := range project.Labels {
-		list1 = append(list1, &SetResponse{
+		list = append(list, &SetResponse{
 			Key:   item.Key,
 			Value: item.Value,
 		})
 	}
 
-	list := make([]*DocumentResponse, 0)
+	list2 := make([]*DocumentResponse, 0)
 
 	for _, item := range project.Documents {
-		list = append(list, DocumentResponse{}.DTO(item))
+		list2 = append(list2, DocumentResponse{}.DTO(item))
 	}
 
-	p.Labels = list1
-	p.Documents = list
+	list3 := make([]*SetResponse, 0)
+
+	for _, item := range project.Params {
+		list3 = append(list3, &SetResponse{
+			Key:   item.Key,
+			Value: item.Value,
+		})
+	}
+
+	list4 := make([]string, 0)
+
+	for _, item := range project.Endpoints {
+		list4 = append(list4, item.Endpoint)
+	}
+
+	p.Labels = list
+	p.Documents = list2
+	p.Params = list3
+	p.Endpoints = list4
 
 	return &p
 }

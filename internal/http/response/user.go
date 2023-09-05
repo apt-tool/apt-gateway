@@ -7,16 +7,18 @@ import (
 	"github.com/apt-tool/apt-core/pkg/models/user"
 )
 
-type Token struct {
-	Token string `json:"token"`
-}
+type (
+	Token struct {
+		Token string `json:"token"`
+	}
 
-type UserResponse struct {
-	ID        uint      `json:"id"`
-	Username  string    `json:"username"`
-	Role      enum.Role `json:"role"`
-	CreatedAt time.Time `json:"created_at"`
-}
+	UserResponse struct {
+		ID        uint      `json:"id"`
+		Username  string    `json:"username"`
+		Role      enum.Role `json:"role"`
+		CreatedAt time.Time `json:"created_at"`
+	}
+)
 
 func (u UserResponse) DTO(user *user.User) *UserResponse {
 	u.ID = user.ID
