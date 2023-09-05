@@ -56,11 +56,11 @@ func (r Register) Create(app *fiber.App) {
 
 	// users crud
 	users := auth.Use(mid.Admin).Group("/users")
-	users.Get("/", ctl.GetUsersList)
-	users.Post("/", ctl.CreateUser)
-	users.Put("/:id", ctl.UpdateUser)
-	users.Get("/:id", ctl.GetUser)
-	users.Delete("/:id", ctl.DeleteUser)
+	users.Get("/", ctl.GetUsersList)     // #
+	users.Post("/", ctl.CreateUser)      // #
+	users.Put("/:id", ctl.UpdateUser)    // # (instruction update user)
+	users.Get("/:id", ctl.GetUser)       // #
+	users.Delete("/:id", ctl.DeleteUser) // #
 
 	// namespaces crud
 	namespaces := auth.Group("/namespaces")

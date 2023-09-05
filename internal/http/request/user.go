@@ -14,9 +14,9 @@ type (
 	}
 
 	UserRegisterRequest struct {
-		Name string `json:"username"`
-		Pass string `json:"password"`
-		Role int    `json:"role"`
+		Name string    `json:"username"`
+		Pass string    `json:"password"`
+		Role enum.Role `json:"role"`
 	}
 )
 
@@ -55,6 +55,6 @@ func (u UserRegisterRequest) ToModel() *user.User {
 	return &user.User{
 		Username: u.Name,
 		Password: u.Pass,
-		Role:     enum.ConvertNumberToRole(u.Role),
+		Role:     u.Role,
 	}
 }
