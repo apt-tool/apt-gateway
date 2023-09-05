@@ -13,11 +13,6 @@ type (
 		Pass string `json:"password"`
 		Role int    `json:"role"`
 	}
-
-	UserRoleUpdateRequest struct {
-		UserID uint      `json:"user_id"`
-		Role   enum.Role `json:"role"`
-	}
 )
 
 func (u UserRegisterRequest) Validate() error {

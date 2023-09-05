@@ -25,12 +25,14 @@ func (r Register) Create(app *fiber.App) {
 	// create an error handler for http service
 	errHandler := handler.ErrorHandler{DevMode: r.Config.HTTP.DevMode}
 
-	// create middleware and controller
+	// create middleware
 	mid := middleware.Middleware{
 		JWTAuthenticator: authenticator,
 		Models:           r.ModelsInterface,
 		ErrHandler:       errHandler,
 	}
+
+	// create controller
 	ctl := controller.Controller{
 		Config:           r.Config,
 		JWTAuthenticator: authenticator,
@@ -40,33 +42,35 @@ func (r Register) Create(app *fiber.App) {
 	}
 
 	// register endpoints
+
 	// login endpoint
-	app.Post("/login", ctl.UserLogin)
+	app.Post("/login", ctl.Login)
 
 	// add auth middleware
 	auth := app.Use(mid.Auth)
 
 	// user crud
-	user := auth.Group("/user")
-	user.Get("/", ctl.GetUser)
-	user.Post("/", ctl.UpdateUser)
+	profile := auth.Group("/profile")
+	profile.Get("/", ctl.GetProfile)
+	profile.Post("/", ctl.UpdateProfile)
 
 	// users crud
 	users := auth.Use(mid.Admin).Group("/users")
 	users.Get("/", ctl.GetUsersList)
-	users.Post("/", ctl.UserRegister)
-	users.Put("/", ctl.UpdateUserRole)
+	users.Post("/", ctl.CreateUser)
+	users.Put("/:id", ctl.UpdateUser)
+	users.Get("/:id", ctl.GetUser)
 	users.Delete("/:id", ctl.DeleteUser)
 
 	// namespaces crud
 	namespaces := auth.Group("/namespaces")
-	namespaces.Get("/", ctl.GetNamespaces)
-	namespaces.Post("/", ctl.CreateNamespace)
-	namespaces.Put("/", ctl.UpdateNamespace)
-	namespaces.Get("/:namespace_id", ctl.GetNamespaceUsers)
-	namespaces.Delete("/:namespace_id", ctl.DeleteNamespace)
-	namespaces.Get("/user", ctl.GetUserNamespaces)
-	namespaces.Get("/user/:namespace_id", mid.UserNamespace, ctl.GetNamespace)
+	namespaces.Get("/", mid.Admin, ctl.GetNamespacesList)
+	namespaces.Post("/", mid.Admin, ctl.CreateNamespace)
+	namespaces.Put("/:id", mid.Admin, ctl.UpdateNamespace)
+	namespaces.Get("/:id", mid.Admin, ctl.GetNamespace)
+	namespaces.Delete("/:id", mid.Admin, ctl.DeleteNamespace)
+	namespaces.Get("/user", ctl.GetUserNamespacesList)
+	namespaces.Get("/user/:id", mid.UserNamespace, ctl.GetUserNamespace)
 
 	// projects crud
 	projects := auth.Group("/projects/:namespace_id")

@@ -54,24 +54,9 @@ func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(records)
 }
 
-// UpdateUser information
+// UpdateUser changes the users role
 func (c Controller) UpdateUser(ctx *fiber.Ctx) error {
 	req := new(request.UserRegisterRequest)
-
-	if err := ctx.BodyParser(req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
-	}
-
-	if er := c.Models.Users.UpdateInfo(ctx.Locals("name").(string), req.Name); er != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to update user error=%w", er))
-	}
-
-	return ctx.SendStatus(fiber.StatusOK)
-}
-
-// UpdateUserRole changes the users role
-func (c Controller) UpdateUserRole(ctx *fiber.Ctx) error {
-	req := new(request.UserRoleUpdateRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
