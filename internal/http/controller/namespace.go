@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/apt-tool/apt-core/pkg/models/user"
 
 	"github.com/apt-tool/apt-gateway/internal/http/request"
 	"github.com/apt-tool/apt-gateway/internal/http/response"
@@ -11,13 +12,15 @@ import (
 
 // CreateNamespace into system
 func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
+	u := ctx.Locals("user").(*user.User)
+
 	req := new(request.NamespaceRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.Create] failed to parse body error: %w", err))
 	}
 
-	if err := c.Models.Namespaces.Create(req.ToModel()); err != nil {
+	if err := c.Models.Namespaces.Create(req.ToModel(u.Username)); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Create] failed to create model error: %w", err))
 	}
 
@@ -26,7 +29,7 @@ func (c Controller) CreateNamespace(ctx *fiber.Ctx) error {
 
 // DeleteNamespace by its id
 func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
-	id, _ := ctx.ParamsInt("namespace_id", 0)
+	id, _ := ctx.ParamsInt("id", 0)
 
 	if err := c.Models.Namespaces.Delete(uint(id)); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Delete] failed to delete model error: %w", err))
@@ -35,8 +38,8 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
-// GetNamespaces of the system
-func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
+// GetNamespacesList of the system
+func (c Controller) GetNamespacesList(ctx *fiber.Ctx) error {
 	list, err := c.Models.Namespaces.Get()
 	if err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Get] failed to get models error: %w", err))
@@ -53,31 +56,30 @@ func (c Controller) GetNamespaces(ctx *fiber.Ctx) error {
 
 // UpdateNamespace manages namespace users
 func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
+	id, _ := ctx.ParamsInt("id", 0)
+
 	req := new(request.NamespaceUpdateRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.namespace.Update] failed to parse body error= %w", err))
 	}
 
-	if err := c.Models.UserNamespace.Clear(req.NamespaceID); err != nil {
+	if err := c.Models.UserNamespace.Clear(uint(id)); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Update] failed to remove records error=%w", err))
 	}
 
-	if er := c.Models.UserNamespace.Create(req.NamespaceID, req.UserIDs); er != nil {
+	if er := c.Models.UserNamespace.Create(uint(id), req.UserIDs); er != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.namespace.Update] failed to update error= %w", er))
 	}
+
+	// todo: update namespace
 
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
-// GetUserNamespaces by users name
-func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
-	name := ctx.Locals("name").(string)
-
-	u, err := c.Models.Users.GetByName(name)
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.User] failed to get records error= %w", err))
-	}
+// GetUserNamespacesList returns list of user namespaces
+func (c Controller) GetUserNamespacesList(ctx *fiber.Ctx) error {
+	u := ctx.Locals("user").(*user.User)
 
 	ids, err := c.Models.UserNamespace.GetNamespaces(u.ID)
 	if err != nil {
@@ -98,11 +100,9 @@ func (c Controller) GetUserNamespaces(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(list)
 }
 
-// GetNamespace returns namespace with its projects
-func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
-	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
-
-	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID))
+// GetUserNamespace by namespace id
+func (c Controller) GetUserNamespace(ctx *fiber.Ctx) error {
+	namespace, err := c.Models.Namespaces.GetByID(ctx.Locals("namespace").(uint))
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Get] failed to get projects error=%w", err))
 	}
@@ -110,23 +110,23 @@ func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
 	return ctx.Status(fiber.StatusOK).JSON(response.NamespaceResponse{}.DTO(namespace))
 }
 
-// GetNamespaceUsers returns namespace with its users
-func (c Controller) GetNamespaceUsers(ctx *fiber.Ctx) error {
-	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
+// GetNamespace returns namespace with its projects
+func (c Controller) GetNamespace(ctx *fiber.Ctx) error {
+	id, _ := ctx.ParamsInt("id", 0)
 
-	ids, err := c.Models.UserNamespace.GetUsers(uint(namespaceID))
+	namespace, err := c.Models.Namespaces.GetByID(uint(id))
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.GetUsers] failed to get ids error=%w", err))
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Get] failed to get projects error=%w", err))
+	}
+
+	ids, err := c.Models.UserNamespace.GetUsers(uint(id))
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Get] failed to get ids error=%w", err))
 	}
 
 	users, err := c.Models.Users.GetByIDs(ids)
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.GetUsers] failed to get users error=%w", err))
-	}
-
-	namespace, err := c.Models.Namespaces.GetByID(uint(namespaceID))
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.GetUsers] failed to get namespace error=%w", err))
+		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.namespace.Get] failed to get users error=%w", err))
 	}
 
 	namespace.Users = users
