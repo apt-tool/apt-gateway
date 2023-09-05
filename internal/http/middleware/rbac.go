@@ -14,7 +14,7 @@ func (m Middleware) UserProject(ctx *fiber.Ctx) error {
 	id := uint(tmp)
 
 	// get login user
-	u := ctx.Locals("users").(*user.User)
+	u := ctx.Locals("user").(*user.User)
 
 	// get namespaces
 	namespaces, err := m.Models.UserNamespace.GetNamespaces(u.ID)
@@ -44,7 +44,7 @@ func (m Middleware) UserNamespace(ctx *fiber.Ctx) error {
 	id := uint(tmp)
 
 	// get login user
-	u := ctx.Locals("users").(*user.User)
+	u := ctx.Locals("user").(*user.User)
 
 	// get namespaces
 	namespaces, err := m.Models.UserNamespace.GetNamespaces(u.ID)
