@@ -11,7 +11,7 @@ import (
 
 // Login logs in a user into our system
 func (c Controller) Login(ctx *fiber.Ctx) error {
-	req := new(request.UserRegisterRequest)
+	req := new(request.UserProfileRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Loing] failed to parse body error=%w", err))

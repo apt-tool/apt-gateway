@@ -44,15 +44,15 @@ func (r Register) Create(app *fiber.App) {
 	// register endpoints
 
 	// login endpoint
-	app.Post("/login", ctl.Login)
+	app.Post("/login", ctl.Login) // #
 
 	// add auth middleware
 	auth := app.Use(mid.Auth)
 
 	// user crud
 	profile := auth.Group("/profile")
-	profile.Get("/", ctl.GetProfile)
-	profile.Post("/", ctl.UpdateProfile)
+	profile.Get("/", ctl.GetProfile)     // #
+	profile.Post("/", ctl.UpdateProfile) // # (instruction update user)
 
 	// users crud
 	users := auth.Use(mid.Admin).Group("/users")

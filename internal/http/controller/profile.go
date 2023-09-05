@@ -2,32 +2,37 @@ package controller
 
 import (
 	"fmt"
-	"github.com/apt-tool/apt-gateway/internal/http/response"
 
 	"github.com/apt-tool/apt-gateway/internal/http/request"
+	"github.com/apt-tool/apt-gateway/internal/http/response"
+
+	"github.com/apt-tool/apt-core/pkg/models/user"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 // GetProfile profile
 func (c Controller) GetProfile(ctx *fiber.Ctx) error {
-	record, err := c.Models.Users.GetByName(ctx.Locals("name").(string))
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Get] username and password don't match error=%w", err))
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(response.UserResponse{}.DTO(record))
+	return ctx.Status(fiber.StatusOK).JSON(response.UserResponse{}.DTO(ctx.Locals("user").(*user.User)))
 }
 
 // UpdateProfile information
 func (c Controller) UpdateProfile(ctx *fiber.Ctx) error {
-	req := new(request.UserRegisterRequest)
+	u := ctx.Locals("user").(*user.User)
+
+	req := new(request.UserProfileRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
 	}
 
-	if er := c.Models.Users.UpdateInfo(ctx.Locals("name").(string), req.Name); er != nil {
+	u.Username = req.Name
+
+	if len(req.Pass) > 0 {
+		u.Password = req.Pass
+	}
+
+	if er := c.Models.Users.Update(u.ID, u); er != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to update user error=%w", er))
 	}
 
