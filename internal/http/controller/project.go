@@ -7,19 +7,22 @@ import (
 	"github.com/apt-tool/apt-gateway/internal/http/response"
 	"github.com/apt-tool/apt-gateway/internal/utils/crypto"
 
+	"github.com/apt-tool/apt-core/pkg/models/user"
+
 	"github.com/gofiber/fiber/v2"
 )
 
 // CreateProject into system
 func (c Controller) CreateProject(ctx *fiber.Ctx) error {
+	u := ctx.Locals("user").(*user.User)
+
 	req := new(request.ProjectRequest)
-	namespaceID, _ := ctx.ParamsInt("namespace_id", 0)
 
 	if err := ctx.BodyParser(&req); err != nil {
 		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.project.Create] failed to parse body error=%w", err))
 	}
 
-	if err := c.Models.Projects.Create(req.ToModel(uint(namespaceID), ctx.Locals("name").(string))); err != nil {
+	if err := c.Models.Projects.Create(req.ToModel(ctx.Locals("namespace").(uint), u.Username)); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.project.Create] failed to create project error=%w", err))
 	}
 
@@ -28,9 +31,7 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 
 // GetProject by its id
 func (c Controller) GetProject(ctx *fiber.Ctx) error {
-	projectID, _ := ctx.ParamsInt("project_id", 0)
-
-	project, err := c.Models.Projects.GetByID(uint(projectID))
+	project, err := c.Models.Projects.GetByID(ctx.Locals("project").(uint))
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.project.Get] record not found error=%w", err))
 	}
@@ -40,9 +41,7 @@ func (c Controller) GetProject(ctx *fiber.Ctx) error {
 
 // DeleteProject by its id
 func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
-	projectID, _ := ctx.ParamsInt("project_id", 0)
-
-	if err := c.Models.Projects.Delete(uint(projectID)); err != nil {
+	if err := c.Models.Projects.Delete(ctx.Locals("project").(uint)); err != nil {
 		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.project.Create] failed to delete project error=%w", err))
 	}
 
@@ -51,7 +50,7 @@ func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
 
 // ExecuteProject will send http request to core
 func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
-	projectID, _ := ctx.ParamsInt("project_id", 0)
+	projectID := ctx.Locals("project").(uint)
 	url := fmt.Sprintf("%s/%d", c.Config.HTTP.Core, projectID)
 
 	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.HTTP.CoreSecret))

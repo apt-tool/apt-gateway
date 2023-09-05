@@ -74,9 +74,9 @@ func (r Register) Create(app *fiber.App) {
 
 	// projects crud
 	projects := auth.Use(mid.UserProject).Group("/projects/:namespace_id")
-	projects.Post("/", ctl.CreateProject)
-	projects.Get("/:id", ctl.GetProject)
-	projects.Post("/:id", ctl.ExecuteProject)
-	projects.Delete("/:id", ctl.DeleteProject)
-	projects.Get("/:id/:document_id", ctl.DownloadProjectDocument)
+	projects.Post("/", ctl.CreateProject)                          // #
+	projects.Get("/:id", ctl.GetProject)                           // #
+	projects.Post("/:id", ctl.ExecuteProject)                      // #
+	projects.Delete("/:id", ctl.DeleteProject)                     // #
+	projects.Get("/:id/:document_id", ctl.DownloadProjectDocument) // #
 }
