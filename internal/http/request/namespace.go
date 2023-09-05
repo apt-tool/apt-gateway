@@ -8,8 +8,8 @@ type (
 	}
 
 	NamespaceUpdateRequest struct {
-		UserIDs     []uint `json:"user_ids"`
-		NamespaceID uint   `json:"namespace_id"`
+		Name    string `json:"name"`
+		UserIDs []uint `json:"user_ids"`
 	}
 
 	NamespaceQueryRequest struct {
@@ -17,8 +17,9 @@ type (
 	}
 )
 
-func (n NamespaceRequest) ToModel() *namespace.Namespace {
+func (n NamespaceRequest) ToModel(creator string) *namespace.Namespace {
 	return &namespace.Namespace{
-		Name: n.Name,
+		Name:      n.Name,
+		CreatedBy: creator,
 	}
 }
