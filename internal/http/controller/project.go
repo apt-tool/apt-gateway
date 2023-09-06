@@ -19,7 +19,8 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 	req := new(request.ProjectRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.project.Create] failed to parse body error=%w", err))
+		return c.ErrHandler.ErrBodyParser(
+			ctx, fmt.Errorf("[controller.project.Create] failed to parse body error=%w", err))
 	}
 
 	if err := c.Models.Projects.Create(req.ToModel(ctx.Locals("namespace").(uint), u.Username)); err != nil {

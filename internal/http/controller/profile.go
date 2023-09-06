@@ -23,17 +23,22 @@ func (c Controller) UpdateProfile(ctx *fiber.Ctx) error {
 	req := new(request.UserProfileRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
-		return c.ErrHandler.ErrBodyParser(ctx, fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err))
+		return c.ErrHandler.ErrBodyParser(
+			ctx,
+			fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err),
+			MessageFailedEntityUpdate,
+		)
 	}
 
 	u.Username = req.Name
-
-	if len(req.Pass) > 0 {
-		u.Password = req.Pass
-	}
+	u.Password = req.Pass
 
 	if er := c.Models.Users.Update(u.ID, u); er != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.user.Update] failed to update user error=%w", er))
+		return c.ErrHandler.ErrRecordNotFound(
+			ctx,
+			fmt.Errorf("[controller.user.Update] failed to update user error=%w", er),
+			MessageFailedEntityUpdate,
+		)
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
