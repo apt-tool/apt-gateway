@@ -20,11 +20,18 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 
 	if err := ctx.BodyParser(&req); err != nil {
 		return c.ErrHandler.ErrBodyParser(
-			ctx, fmt.Errorf("[controller.project.Create] failed to parse body error=%w", err))
+			ctx,
+			fmt.Errorf("[controller.project.Create] failed to parse body error=%w", err),
+			MessageRequestBody,
+		)
 	}
 
 	if err := c.Models.Projects.Create(req.ToModel(ctx.Locals("namespace").(uint), u.Username)); err != nil {
-		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.project.Create] failed to create project error=%w", err))
+		return c.ErrHandler.ErrDatabase(
+			ctx,
+			fmt.Errorf("[controller.project.Create] failed to create project error=%w", err),
+			MessageFailedEntityCreate,
+		)
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
@@ -34,7 +41,11 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 func (c Controller) GetProject(ctx *fiber.Ctx) error {
 	project, err := c.Models.Projects.GetByID(ctx.Locals("project").(uint))
 	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(ctx, fmt.Errorf("[controller.project.Get] record not found error=%w", err))
+		return c.ErrHandler.ErrRecordNotFound(
+			ctx,
+			fmt.Errorf("[controller.project.Get] record not found error=%w", err),
+			MessageFailedEntityList,
+		)
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(response.ProjectResponse{}.DTO(project))
@@ -43,7 +54,11 @@ func (c Controller) GetProject(ctx *fiber.Ctx) error {
 // DeleteProject by its id
 func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
 	if err := c.Models.Projects.Delete(ctx.Locals("project").(uint)); err != nil {
-		return c.ErrHandler.ErrDatabase(ctx, fmt.Errorf("[controller.project.Create] failed to delete project error=%w", err))
+		return c.ErrHandler.ErrDatabase(
+			ctx,
+			fmt.Errorf("[controller.project.Delete] failed to delete project error=%w", err),
+			MessageFailedEntityRemove,
+		)
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
@@ -56,11 +71,19 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 
 	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.HTTP.CoreSecret))
 	if err != nil {
-		return c.ErrHandler.ErrLogical(ctx, fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err))
+		return c.ErrHandler.ErrLogical(
+			ctx,
+			fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err),
+			MessageFailedEntityList,
+		)
 	}
 
 	if rsp.StatusCode != 200 {
-		return c.ErrHandler.ErrLogical(ctx, fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err))
+		return c.ErrHandler.ErrLogical(
+			ctx,
+			fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err),
+			MessageFailedExecute,
+		)
 	}
 
 	return ctx.SendStatus(fiber.StatusOK)
