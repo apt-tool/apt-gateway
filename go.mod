@@ -3,7 +3,7 @@ module github.com/apt-tool/apt-gateway
 go 1.20
 
 require (
-	github.com/apt-tool/apt-core v0.2.2
+	github.com/apt-tool/apt-core v0.2.3
 	github.com/gofiber/fiber/v2 v2.48.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/knadh/koanf v1.5.0
