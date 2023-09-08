@@ -53,7 +53,7 @@ func (c Controller) DeleteNamespace(ctx *fiber.Ctx) error {
 
 // GetNamespacesList of the system
 func (c Controller) GetNamespacesList(ctx *fiber.Ctx) error {
-	list, err := c.Models.Namespaces.Get()
+	list, err := c.Models.Namespaces.GetAll()
 	if err != nil {
 		return c.ErrHandler.ErrDatabase(
 			ctx,
@@ -101,7 +101,22 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 		)
 	}
 
-	// todo: update namespace
+	namespace, err := c.Models.Namespaces.GetByID(uint(id))
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(
+			ctx,
+			fmt.Errorf("[controller.namespace.Update] failed to update error= %w", err),
+			MessageFailedEntityList,
+		)
+	}
+
+	if er := c.Models.Namespaces.Update(uint(id), namespace); er != nil {
+		return c.ErrHandler.ErrDatabase(
+			ctx,
+			fmt.Errorf("[controller.namespace.Update] failed to update error= %w", err),
+			MessageFailedEntityUpdate,
+		)
+	}
 
 	return ctx.SendStatus(fiber.StatusOK)
 }
