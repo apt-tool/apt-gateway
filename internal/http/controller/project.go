@@ -69,8 +69,12 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 	projectID := ctx.Locals("project").(uint)
 	url := fmt.Sprintf("%s/%d", c.Config.HTTP.Core, projectID)
 
+	c.Metrics.TotalExecutes++
+
 	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.HTTP.CoreSecret))
 	if err != nil {
+		c.Metrics.FailedRequests++
+
 		return c.ErrHandler.ErrLogical(
 			ctx,
 			fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err),
@@ -79,12 +83,16 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 	}
 
 	if rsp.StatusCode != 200 {
+		c.Metrics.FailedRequests++
+
 		return c.ErrHandler.ErrLogical(
 			ctx,
 			fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err),
 			MessageFailedExecute,
 		)
 	}
+
+	c.Metrics.SuccessfulRequests++
 
 	return ctx.SendStatus(fiber.StatusOK)
 }
