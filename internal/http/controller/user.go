@@ -58,7 +58,7 @@ func (c Controller) GetUser(ctx *fiber.Ctx) error {
 
 // GetUsersList returns the list of users
 func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
-	list, err := c.Models.Users.Get()
+	list, err := c.Models.Users.GetAll()
 	if err != nil {
 		return c.ErrHandler.ErrDatabase(
 			ctx,
