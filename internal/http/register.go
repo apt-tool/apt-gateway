@@ -39,6 +39,7 @@ func (r Register) Create(app *fiber.App) {
 		Models:           r.ModelsInterface,
 		ErrHandler:       errHandler,
 		Client:           client.NewClient(),
+		Metrics:          controller.Metrics{},
 	}
 
 	// register endpoints
@@ -48,6 +49,9 @@ func (r Register) Create(app *fiber.App) {
 
 	// add auth middleware
 	auth := app.Use(mid.Auth)
+
+	// metrics
+	auth.Get("/metrics", mid.Admin, ctl.MetricsHandler)
 
 	// user crud
 	profile := auth.Group("/profile")

@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// MetricsHandler returns cluster metrics
 func (c Controller) MetricsHandler(ctx *fiber.Ctx) error {
 	users, err := c.Models.Users.GetAll()
 	if err != nil {
