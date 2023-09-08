@@ -34,6 +34,8 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 		)
 	}
 
+	c.Metrics.TotalProjects++
+
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
@@ -60,6 +62,8 @@ func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
 			MessageFailedEntityRemove,
 		)
 	}
+
+	c.Metrics.TotalProjects--
 
 	return ctx.SendStatus(fiber.StatusOK)
 }
@@ -104,6 +108,8 @@ func (c Controller) DownloadProjectDocument(ctx *fiber.Ctx) error {
 	cypher := crypto.GetMD5Hash(fmt.Sprintf("%s%d", c.Config.FTP.Access, documentID))
 
 	url := fmt.Sprintf("%s/download?path=%d&token=%s", c.Config.FTP.Host, documentID, cypher)
+
+	c.Metrics.TotalDownloads++
 
 	return ctx.Redirect(url, fiber.StatusPermanentRedirect)
 }
