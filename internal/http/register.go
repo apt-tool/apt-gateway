@@ -52,13 +52,13 @@ func (r Register) Create(app *fiber.App) {
 	// user crud
 	profile := auth.Group("/profile")
 	profile.Get("/", ctl.GetProfile)     // #
-	profile.Post("/", ctl.UpdateProfile) // # (instruction update user)
+	profile.Post("/", ctl.UpdateProfile) // #
 
 	// users crud
 	users := auth.Use(mid.Admin).Group("/users")
 	users.Get("/", ctl.GetUsersList)     // #
 	users.Post("/", ctl.CreateUser)      // #
-	users.Put("/:id", ctl.UpdateUser)    // # (instruction update user)
+	users.Put("/:id", ctl.UpdateUser)    // #
 	users.Get("/:id", ctl.GetUser)       // #
 	users.Delete("/:id", ctl.DeleteUser) // #
 
