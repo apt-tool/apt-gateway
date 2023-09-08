@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (c Controller) Metrics(ctx *fiber.Ctx) error {
+func (c Controller) MetricsHandler(ctx *fiber.Ctx) error {
 	users, err := c.Models.Users.GetAll()
 	if err != nil {
 		return c.ErrHandler.ErrDatabase(
@@ -32,5 +32,6 @@ func (c Controller) Metrics(ctx *fiber.Ctx) error {
 		"ftp":        c.Config.FTP.Host,
 		"jwt":        c.Config.JWT.ExpireTime,
 		"mysql":      fmt.Sprintf("%s:%d", c.Config.MySQL.Host, c.Config.MySQL.Port),
+		"metrics":    c.Metrics,
 	})
 }
