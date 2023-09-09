@@ -110,6 +110,8 @@ func (c Controller) UpdateNamespace(ctx *fiber.Ctx) error {
 		)
 	}
 
+	namespace.Name = req.Name
+
 	if er := c.Models.Namespaces.Update(uint(id), namespace); er != nil {
 		return c.ErrHandler.ErrDatabase(
 			ctx,
