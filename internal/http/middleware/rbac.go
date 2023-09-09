@@ -19,7 +19,11 @@ func (m Middleware) UserProject(ctx *fiber.Ctx) error {
 	// get namespaces
 	namespaces, err := m.Models.UserNamespace.GetNamespaces(u.ID)
 	if err != nil {
-		return m.ErrHandler.ErrRecordNotFound(ctx, err)
+		return m.ErrHandler.ErrRecordNotFound(
+			ctx,
+			err,
+			"namespace not found!",
+		)
 	}
 
 	// check to see if namespace exists
@@ -35,7 +39,7 @@ func (m Middleware) UserProject(ctx *fiber.Ctx) error {
 		}
 	}
 
-	return m.ErrHandler.ErrAccess(ctx, errors.New("user is not in this namespace"))
+	return m.ErrHandler.ErrAccess(ctx, errors.New("user is not in this namespace"), "unable to access this project")
 }
 
 // UserNamespace checks to see if user belongs to a namespace or not
@@ -49,7 +53,7 @@ func (m Middleware) UserNamespace(ctx *fiber.Ctx) error {
 	// get namespaces
 	namespaces, err := m.Models.UserNamespace.GetNamespaces(u.ID)
 	if err != nil {
-		return m.ErrHandler.ErrRecordNotFound(ctx, err)
+		return m.ErrHandler.ErrRecordNotFound(ctx, err, "namespace not found!")
 	}
 
 	// check to see if namespace exists
@@ -61,5 +65,5 @@ func (m Middleware) UserNamespace(ctx *fiber.Ctx) error {
 		}
 	}
 
-	return m.ErrHandler.ErrAccess(ctx, errors.New("user is not in this namespace"))
+	return m.ErrHandler.ErrAccess(ctx, errors.New("user is not in this namespace"), "unable to access this project")
 }

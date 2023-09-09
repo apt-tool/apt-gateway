@@ -17,5 +17,5 @@ func (m Middleware) Admin(ctx *fiber.Ctx) error {
 		return ctx.Next()
 	}
 
-	return m.ErrHandler.ErrAccess(ctx, errors.New("user cannot access this endpoint"))
+	return m.ErrHandler.ErrAccess(ctx, errors.New("user cannot access this endpoint"), "sorry, you cannot access this resource!")
 }
