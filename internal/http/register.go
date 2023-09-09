@@ -68,13 +68,13 @@ func (r Register) Create(app *fiber.App) {
 
 	// namespaces crud
 	namespaces := auth.Group("/namespaces")
-	namespaces.Get("/", mid.Admin, ctl.GetNamespacesList)                // #
-	namespaces.Post("/", mid.Admin, ctl.CreateNamespace)                 // #
-	namespaces.Put("/:id", mid.Admin, ctl.UpdateNamespace)               // #
-	namespaces.Get("/:id", mid.Admin, ctl.GetNamespace)                  // #
-	namespaces.Delete("/:id", mid.Admin, ctl.DeleteNamespace)            // #
-	namespaces.Get("/user", ctl.GetUserNamespacesList)                   // #
-	namespaces.Get("/user/:id", mid.UserNamespace, ctl.GetUserNamespace) // #
+	namespaces.Get("/", mid.Admin, ctl.GetNamespacesList)                     // #
+	namespaces.Post("/", mid.Admin, ctl.CreateNamespace)                      // #
+	namespaces.Put("/:id", mid.Admin, ctl.UpdateNamespace)                    // #
+	namespaces.Get("/:id", mid.Admin, ctl.GetNamespace)                       // #
+	namespaces.Delete("/:id", mid.Admin, ctl.DeleteNamespace)                 // #
+	namespaces.Get("/user/list", ctl.GetUserNamespacesList)                   // #
+	namespaces.Get("/user/list/:id", mid.UserNamespace, ctl.GetUserNamespace) // #
 
 	// projects crud
 	projects := auth.Use(mid.UserProject).Group("/projects/:namespace_id")
