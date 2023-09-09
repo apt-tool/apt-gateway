@@ -5,6 +5,7 @@ import (
 
 	"github.com/apt-tool/apt-gateway/internal/http/request"
 	"github.com/apt-tool/apt-gateway/internal/http/response"
+	"github.com/apt-tool/apt-gateway/internal/utils/crypto"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -101,7 +102,10 @@ func (c Controller) UpdateUser(ctx *fiber.Ctx) error {
 
 	u.Username = req.Name
 	u.Role = req.Role
-	u.Password = req.Pass
+	pass := crypto.GetMD5Hash(req.Pass)
+	if pass != u.Password {
+		u.Password = pass
+	}
 
 	if er := c.Models.Users.Update(uint(id), u); er != nil {
 		return c.ErrHandler.ErrDatabase(

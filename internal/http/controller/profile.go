@@ -5,6 +5,7 @@ import (
 
 	"github.com/apt-tool/apt-gateway/internal/http/request"
 	"github.com/apt-tool/apt-gateway/internal/http/response"
+	"github.com/apt-tool/apt-gateway/internal/utils/crypto"
 
 	"github.com/apt-tool/apt-core/pkg/models/user"
 
@@ -31,7 +32,10 @@ func (c Controller) UpdateProfile(ctx *fiber.Ctx) error {
 	}
 
 	u.Username = req.Name
-	u.Password = req.Pass
+	pass := crypto.GetMD5Hash(req.Pass)
+	if pass != u.Password {
+		u.Password = pass
+	}
 
 	if er := c.Models.Users.Update(u.ID, u); er != nil {
 		return c.ErrHandler.ErrRecordNotFound(
