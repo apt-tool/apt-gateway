@@ -41,7 +41,10 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 
 // GetProject by its id
 func (c Controller) GetProject(ctx *fiber.Ctx) error {
-	project, err := c.Models.Projects.GetByID(ctx.Locals("project").(uint))
+	tmp, _ := ctx.ParamsInt("id", 0)
+	id := uint(tmp)
+
+	project, err := c.Models.Projects.GetByID(id)
 	if err != nil {
 		return c.ErrHandler.ErrRecordNotFound(
 			ctx,
@@ -55,7 +58,10 @@ func (c Controller) GetProject(ctx *fiber.Ctx) error {
 
 // DeleteProject by its id
 func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
-	if err := c.Models.Projects.Delete(ctx.Locals("project").(uint)); err != nil {
+	tmp, _ := ctx.ParamsInt("id", 0)
+	id := uint(tmp)
+
+	if err := c.Models.Projects.Delete(id); err != nil {
 		return c.ErrHandler.ErrDatabase(
 			ctx,
 			fmt.Errorf("[controller.project.Delete] failed to delete project error=%w", err),
@@ -70,7 +76,8 @@ func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
 
 // ExecuteProject will send http request to core
 func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
-	projectID := ctx.Locals("project").(uint)
+	tmp, _ := ctx.ParamsInt("id", 0)
+	projectID := uint(tmp)
 	url := fmt.Sprintf("%s/%d", c.Config.HTTP.Core, projectID)
 
 	c.Metrics.TotalExecutes++

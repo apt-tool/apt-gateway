@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"errors"
-
 	"github.com/apt-tool/apt-core/pkg/models/user"
 
 	"github.com/gofiber/fiber/v2"
@@ -30,10 +29,6 @@ func (m Middleware) UserProject(ctx *fiber.Ctx) error {
 	for _, item := range namespaces {
 		if item == id {
 			ctx.Locals("namespace", id)
-
-			tmp, _ = ctx.ParamsInt("id", 0)
-
-			ctx.Locals("project", uint(tmp))
 
 			return ctx.Next()
 		}
