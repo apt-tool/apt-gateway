@@ -32,9 +32,9 @@ func (c Controller) UpdateProfile(ctx *fiber.Ctx) error {
 	}
 
 	u.Username = req.Name
-	pass := crypto.GetMD5Hash(req.Pass)
-	if pass != u.Password {
-		u.Password = pass
+
+	if len(req.Pass) > 0 {
+		u.Password = crypto.GetMD5Hash(req.Pass)
 	}
 
 	if er := c.Models.Users.Update(u.ID, u); er != nil {
