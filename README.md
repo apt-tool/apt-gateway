@@ -43,7 +43,7 @@ ftp:
 
 ## Setup
 
-Setup ui application in docker container with following command:
+Setup gateway service in docker container with following command:
 
 ```shell
 docker run -d \
