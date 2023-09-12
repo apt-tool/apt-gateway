@@ -15,7 +15,6 @@ type (
 	UserResponse struct {
 		ID        uint      `json:"id"`
 		Username  string    `json:"username"`
-		Password  string    `json:"password"`
 		Role      enum.Role `json:"role"`
 		CreatedAt time.Time `json:"created_at"`
 	}
@@ -24,7 +23,6 @@ type (
 func (u UserResponse) DTO(user *user.User) *UserResponse {
 	u.ID = user.ID
 	u.Username = user.Username
-	u.Password = user.Password
 	u.Role = user.Role
 	u.CreatedAt = user.CreatedAt
 
