@@ -26,6 +26,15 @@ func (c Controller) MetricsHandler(ctx *fiber.Ctx) error {
 		)
 	}
 
+	tmp := 0
+	for _, item := range namespaces {
+		namespace, _ := c.Models.Namespaces.GetByID(item.ID)
+
+		tmp = tmp + len(namespace.Projects)
+	}
+
+	c.Metrics.TotalProjects = tmp
+
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
 		"users":      len(users),
 		"namespaces": len(namespaces),

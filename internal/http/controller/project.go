@@ -34,8 +34,6 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 		)
 	}
 
-	c.Metrics.TotalProjects++
-
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
@@ -68,8 +66,6 @@ func (c Controller) DeleteProject(ctx *fiber.Ctx) error {
 			MessageFailedEntityRemove,
 		)
 	}
-
-	c.Metrics.TotalProjects--
 
 	return ctx.SendStatus(fiber.StatusOK)
 }
