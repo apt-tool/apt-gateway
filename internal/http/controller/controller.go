@@ -16,7 +16,7 @@ type (
 		Models           *models.Interface
 		ErrHandler       handler.ErrorHandler
 		Client           client.HTTPClient
-		Metrics          Metrics
+		Metrics          *Metrics
 	}
 
 	Metrics struct {

@@ -39,7 +39,12 @@ func (r Register) Create(app *fiber.App) {
 		Models:           r.ModelsInterface,
 		ErrHandler:       errHandler,
 		Client:           client.NewClient(),
-		Metrics:          controller.Metrics{},
+		Metrics: &controller.Metrics{
+			SuccessfulRequests: 0,
+			FailedRequests:     0,
+			TotalDownloads:     0,
+			TotalExecutes:      0,
+		},
 	}
 
 	// register endpoints
