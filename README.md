@@ -1,10 +1,10 @@
-# APT Gateway
+# PTaaS Gateway
 
 ![](https://img.shields.io/badge/language-golang_v1.20-lightblue)
 ![](https://img.shields.io/badge/tests-passed-green)
 ![](https://img.shields.io/badge/version-0.1.1-red)
 
-Gateway is the ```apt``` restful API for handling client http requests.
+Gateway is the ```PTaaS``` restful API for handling client http requests.
 This module handles the user interface logic in order to communicate with
 ```core``` and ```ftp```. It is the system main gateway app.
 
