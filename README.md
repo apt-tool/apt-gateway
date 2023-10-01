@@ -4,16 +4,16 @@
 ![](https://img.shields.io/badge/tests-passed-green)
 ![](https://img.shields.io/badge/version-0.1.1-red)
 
-Gateway is the ```apt``` restful API for handling client http requests.
+Gateway is the ```PTaaS``` restful API for handling client http requests.
 This module handles the user interface logic in order to communicate with
-```core``` and ```ftp```. It is the system main gateway app.
+```base-api``` and ```ftp-server```. It is the system main gateway app.
 
 ## Image
 
 Gateway app docker image address:
 
 ```shell
-docker pull amirhossein21/apt-gateway:v0.1.1
+docker pull amirhossein21/ptaas-tool:gateway-v0.1.1
 ```
 
 ### configs
@@ -49,5 +49,5 @@ Setup gateway service in docker container with following command:
 docker run -d \
   -v type=bind,source=$(pwd)/config.yml,dest=/app/config.yml \
   -p 80:80 \
-  amirhossein21/apt-gateway:v0.1.1
+  amirhossein21/ptaas-tool:gateway-v0.1.1
 ```

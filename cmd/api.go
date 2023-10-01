@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/apt-tool/apt-gateway/internal/config"
-	"github.com/apt-tool/apt-gateway/internal/http"
+	"github.com/ptaas-tool/gateway/internal/config"
+	"github.com/ptaas-tool/gateway/internal/http"
 
 	"github.com/apt-tool/apt-core/pkg/models"
 

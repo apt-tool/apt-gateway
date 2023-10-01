@@ -1,4 +1,4 @@
-module github.com/apt-tool/apt-gateway
+module github.com/ptaas-tool/gateway
 
 go 1.20
 

@@ -1,12 +1,12 @@
 package http
 
 import (
-	"github.com/apt-tool/apt-gateway/internal/config"
-	"github.com/apt-tool/apt-gateway/internal/http/controller"
-	"github.com/apt-tool/apt-gateway/internal/http/controller/handler"
-	"github.com/apt-tool/apt-gateway/internal/http/middleware"
-	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
-	"github.com/apt-tool/apt-gateway/pkg/client"
+	"github.com/ptaas-tool/gateway/internal/config"
+	"github.com/ptaas-tool/gateway/internal/http/controller"
+	"github.com/ptaas-tool/gateway/internal/http/controller/handler"
+	"github.com/ptaas-tool/gateway/internal/http/middleware"
+	"github.com/ptaas-tool/gateway/internal/utils/jwt"
+	"github.com/ptaas-tool/gateway/pkg/client"
 
 	"github.com/apt-tool/apt-core/pkg/models"
 

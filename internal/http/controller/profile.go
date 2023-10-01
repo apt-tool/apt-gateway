@@ -3,9 +3,9 @@ package controller
 import (
 	"fmt"
 
-	"github.com/apt-tool/apt-gateway/internal/http/request"
-	"github.com/apt-tool/apt-gateway/internal/http/response"
-	"github.com/apt-tool/apt-gateway/internal/utils/crypto"
+	"github.com/ptaas-tool/gateway/internal/http/request"
+	"github.com/ptaas-tool/gateway/internal/http/response"
+	"github.com/ptaas-tool/gateway/internal/utils/crypto"
 
 	"github.com/apt-tool/apt-core/pkg/models/user"
 

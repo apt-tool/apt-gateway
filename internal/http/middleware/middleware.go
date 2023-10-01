@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/apt-tool/apt-gateway/internal/http/controller/handler"
-	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
+	"github.com/ptaas-tool/gateway/internal/http/controller/handler"
+	"github.com/ptaas-tool/gateway/internal/utils/jwt"
 
 	"github.com/apt-tool/apt-core/pkg/models"
 )

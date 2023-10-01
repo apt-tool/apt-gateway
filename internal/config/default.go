@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/apt-tool/apt-gateway/internal/sql"
-	"github.com/apt-tool/apt-gateway/internal/utils/jwt"
+	"github.com/ptaas-tool/gateway/internal/sql"
+	"github.com/ptaas-tool/gateway/internal/utils/jwt"
 )
 
 func Default() Config {
