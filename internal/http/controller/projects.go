@@ -74,7 +74,7 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 
 	c.Metrics.TotalExecutes++
 
-	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.HTTP.CoreSecret))
+	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", crypto.GetMD5Hash(c.Config.HTTP.CoreSecret)))
 	if err != nil {
 		c.Metrics.FailedRequests++
 
@@ -108,7 +108,7 @@ func (c Controller) RerunDocument(ctx *fiber.Ctx) error {
 
 	c.Metrics.TotalExecutes++
 
-	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.HTTP.CoreSecret))
+	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", crypto.GetMD5Hash(c.Config.HTTP.CoreSecret)))
 	if err != nil {
 		c.Metrics.FailedRequests++
 
