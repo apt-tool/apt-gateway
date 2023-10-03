@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 // NewConnection to mysql server.
@@ -18,5 +19,7 @@ func NewConnection(cfg Config) (*gorm.DB, error) {
 		cfg.Database,
 	)
 
-	return gorm.Open(mysql.Open(address), &gorm.Config{})
+	return gorm.Open(mysql.Open(address), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 }
