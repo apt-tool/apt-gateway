@@ -57,7 +57,7 @@ func (r Register) Create(app *fiber.App) {
 	auth := app.Use(mid.Auth)
 
 	// users crud
-	users := auth.Use().Group("/users")
+	users := auth.Group("/users")
 	users.Get("/", ctl.GetUsersList)
 	users.Post("/", ctl.CreateUser)
 	users.Delete("/:id", ctl.DeleteUser)
