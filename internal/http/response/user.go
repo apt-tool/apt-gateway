@@ -3,8 +3,8 @@ package response
 import (
 	"time"
 
-	"github.com/apt-tool/apt-core/pkg/enum"
-	"github.com/apt-tool/apt-core/pkg/models/user"
+	"github.com/ptaas-tool/base-api/pkg/enum"
+	"github.com/ptaas-tool/base-api/pkg/models/user"
 )
 
 type (

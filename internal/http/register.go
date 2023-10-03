@@ -8,7 +8,7 @@ import (
 	"github.com/ptaas-tool/gateway/internal/utils/jwt"
 	"github.com/ptaas-tool/gateway/pkg/client"
 
-	"github.com/apt-tool/apt-core/pkg/models"
+	"github.com/ptaas-tool/base-api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
 )

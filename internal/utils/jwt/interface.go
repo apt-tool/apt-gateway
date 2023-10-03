@@ -1,13 +1,9 @@
 package jwt
 
-import (
-	"time"
-
-	"github.com/apt-tool/apt-core/pkg/enum"
-)
+import "time"
 
 type Authenticator interface {
-	GenerateToken(name string, role enum.Role) (string, time.Time, error)
+	GenerateToken(name string) (string, time.Time, error)
 	ParseToken(token string) (string, error)
 }
 

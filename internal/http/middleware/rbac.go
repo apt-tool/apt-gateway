@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"errors"
-	"github.com/apt-tool/apt-core/pkg/models/user"
+	"github.com/ptaas-tool/base-api/pkg/models/user"
 
 	"github.com/gofiber/fiber/v2"
 )

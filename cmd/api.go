@@ -7,7 +7,7 @@ import (
 	"github.com/ptaas-tool/gateway/internal/config"
 	"github.com/ptaas-tool/gateway/internal/http"
 
-	"github.com/apt-tool/apt-core/pkg/models"
+	"github.com/ptaas-tool/base-api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
