@@ -5,7 +5,6 @@ import (
 
 	"github.com/ptaas-tool/gateway/internal/http/request"
 	"github.com/ptaas-tool/gateway/internal/http/response"
-	"github.com/ptaas-tool/gateway/internal/utils/crypto"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -41,22 +40,6 @@ func (c Controller) CreateUser(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
-// GetUser profile
-func (c Controller) GetUser(ctx *fiber.Ctx) error {
-	id, _ := ctx.ParamsInt("id", 0)
-
-	record, err := c.Models.Users.GetByID(uint(id))
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(
-			ctx,
-			fmt.Errorf("[controller.user.Get] username and password don't match error=%w", err),
-			MessageFailedEntityList,
-		)
-	}
-
-	return ctx.Status(fiber.StatusOK).JSON(response.UserResponse{}.DTO(record))
-}
-
 // GetUsersList returns the list of users
 func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 	list, err := c.Models.Users.GetAll()
@@ -75,47 +58,6 @@ func (c Controller) GetUsersList(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(fiber.StatusOK).JSON(records)
-}
-
-// UpdateUser changes the users role
-func (c Controller) UpdateUser(ctx *fiber.Ctx) error {
-	id, _ := ctx.ParamsInt("id", 0)
-
-	req := new(request.UserRegisterRequest)
-
-	if err := ctx.BodyParser(&req); err != nil {
-		return c.ErrHandler.ErrBodyParser(
-			ctx,
-			fmt.Errorf("[controller.user.Update] failed to parse body error=%w", err),
-			MessageRequestBody,
-		)
-	}
-
-	u, err := c.Models.Users.GetByID(uint(id))
-	if err != nil {
-		return c.ErrHandler.ErrRecordNotFound(
-			ctx,
-			fmt.Errorf("[controller.user.Update] failed to find user error=%w", err),
-			MessageFailedEntityUpdate,
-		)
-	}
-
-	u.Username = req.Name
-	u.Role = req.Role
-
-	if len(req.Pass) > 0 {
-		u.Password = crypto.GetMD5Hash(req.Pass)
-	}
-
-	if er := c.Models.Users.Update(uint(id), u); er != nil {
-		return c.ErrHandler.ErrDatabase(
-			ctx,
-			fmt.Errorf("[controller.user.Update] failed to update user error=%w", err),
-			MessageFailedEntityUpdate,
-		)
-	}
-
-	return ctx.SendStatus(fiber.StatusOK)
 }
 
 // DeleteUser removes user
