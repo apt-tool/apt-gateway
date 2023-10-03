@@ -104,6 +104,40 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
+// RerunDocument will send http request to core
+func (c Controller) RerunDocument(ctx *fiber.Ctx) error {
+	tmp, _ := ctx.ParamsInt("id", 0)
+	documentID := uint(tmp)
+	url := fmt.Sprintf("%s/rerun/%d", c.Config.HTTP.Core, documentID)
+
+	c.Metrics.TotalExecutes++
+
+	rsp, err := c.Client.Get(url, fmt.Sprintf("x-secure:%s", c.Config.HTTP.CoreSecret))
+	if err != nil {
+		c.Metrics.FailedRequests++
+
+		return c.ErrHandler.ErrLogical(
+			ctx,
+			fmt.Errorf("[controller.project.RerunDocument] failed to execute project error=%w", err),
+			MessageFailedEntityList,
+		)
+	}
+
+	if rsp.StatusCode != 200 {
+		c.Metrics.FailedRequests++
+
+		return c.ErrHandler.ErrLogical(
+			ctx,
+			fmt.Errorf("[controller.project.RerunDocument] failed to execute project error=%w", err),
+			MessageFailedExecute,
+		)
+	}
+
+	c.Metrics.SuccessfulRequests++
+
+	return ctx.SendStatus(fiber.StatusOK)
+}
+
 // DownloadProjectDocument will download the project document
 func (c Controller) DownloadProjectDocument(ctx *fiber.Ctx) error {
 	documentID, _ := ctx.ParamsInt("document_id", 0)
