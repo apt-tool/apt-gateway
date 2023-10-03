@@ -46,9 +46,12 @@ func (r Register) Create(app *fiber.App) {
 		},
 	}
 
-	// login endpoint and metrics
+	// health, login endpoint and metrics
 	app.Post("/login", ctl.Login)
 	app.Get("/metrics", ctl.MetricsHandler)
+	app.Get("/health", func(ctx *fiber.Ctx) error {
+		return ctx.SendStatus(fiber.StatusOK)
+	})
 
 	// add auth middleware
 	auth := app.Use(mid.Auth)
