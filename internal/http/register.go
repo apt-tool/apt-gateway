@@ -11,6 +11,7 @@ import (
 	"github.com/ptaas-tool/base-api/pkg/models"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 type Register struct {
@@ -46,12 +47,17 @@ func (r Register) Create(app *fiber.App) {
 		},
 	}
 
-	// health, login endpoint and metrics
-	app.Post("/login", ctl.Login)
+	// health, logger and metrics
 	app.Get("/metrics", ctl.MetricsHandler)
 	app.Get("/health", func(ctx *fiber.Ctx) error {
 		return ctx.SendStatus(fiber.StatusOK)
 	})
+	app.Use(logger.New(logger.Config{
+		Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
+	}))
+
+	// user login endpoint
+	app.Post("/login", ctl.Login)
 
 	// add auth middleware
 	auth := app.Use(mid.Auth)
