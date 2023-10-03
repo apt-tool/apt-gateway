@@ -9,6 +9,7 @@ type (
 	}
 
 	ProjectRequest struct {
+		Creator     string       `json:"creator"`
 		Name        string       `json:"name"`
 		Description string       `json:"description"`
 		Host        string       `json:"host"`
@@ -20,7 +21,7 @@ type (
 	}
 )
 
-func (p ProjectRequest) ToModel(namespaceID uint, creator string) *project.Project {
+func (p ProjectRequest) ToModel() *project.Project {
 	params := make([]*project.ParamSet, 0)
 	labels := make([]*project.LabelSet, 0)
 	endpoints := make([]*project.EndpointSet, 0)
@@ -51,8 +52,7 @@ func (p ProjectRequest) ToModel(namespaceID uint, creator string) *project.Proje
 		Port:        p.Port,
 		Description: p.Description,
 		HTTPSecure:  p.HTTPSecure,
-		Creator:     creator,
-		NamespaceID: namespaceID,
+		Creator:     p.Creator,
 		Params:      params,
 		Labels:      labels,
 		Endpoints:   endpoints,

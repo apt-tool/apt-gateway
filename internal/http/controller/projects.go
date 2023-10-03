@@ -7,15 +7,11 @@ import (
 	"github.com/ptaas-tool/gateway/internal/http/response"
 	"github.com/ptaas-tool/gateway/internal/utils/crypto"
 
-	"github.com/ptaas-tool/base-api/pkg/models/user"
-
 	"github.com/gofiber/fiber/v2"
 )
 
 // CreateProject into system
 func (c Controller) CreateProject(ctx *fiber.Ctx) error {
-	u := ctx.Locals("user").(*user.User)
-
 	req := new(request.ProjectRequest)
 
 	if err := ctx.BodyParser(&req); err != nil {
@@ -26,7 +22,7 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 		)
 	}
 
-	if err := c.Models.Projects.Create(req.ToModel(ctx.Locals("namespace").(uint), u.Username)); err != nil {
+	if err := c.Models.Projects.Create(req.ToModel()); err != nil {
 		return c.ErrHandler.ErrDatabase(
 			ctx,
 			fmt.Errorf("[controller.project.Create] failed to create project error=%w", err),
