@@ -11,7 +11,7 @@ import (
 
 // Login logs in a user into our system
 func (c Controller) Login(ctx *fiber.Ctx) error {
-	req := new(request.UserProfileRequest)
+	req := new(request.UserRegisterRequest)
 
 	if err := ctx.BodyParser(req); err != nil {
 		return c.ErrHandler.ErrBodyParser(
