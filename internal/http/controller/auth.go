@@ -38,7 +38,7 @@ func (c Controller) Login(ctx *fiber.Ctx) error {
 		)
 	}
 
-	token, _, err := c.JWTAuthenticator.GenerateToken(userTmp.Username, userTmp.Role)
+	token, _, err := c.JWTAuthenticator.GenerateToken(userTmp.Username)
 	if err != nil {
 		return c.ErrHandler.ErrLogical(
 			ctx,
