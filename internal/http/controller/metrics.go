@@ -17,31 +17,22 @@ func (c Controller) MetricsHandler(ctx *fiber.Ctx) error {
 		)
 	}
 
-	namespaces, err := c.Models.Namespaces.GetAll()
+	projects, err := c.Models.Projects.GetAll()
 	if err != nil {
 		return c.ErrHandler.ErrDatabase(
 			ctx,
-			fmt.Errorf("[metrics] failed to get namespaces error=%w", err),
+			fmt.Errorf("[metrics] failed to get projects error=%w", err),
 			MessageFailedEntityList,
 		)
 	}
 
-	tmp := 0
-	for _, item := range namespaces {
-		namespace, _ := c.Models.Namespaces.GetByID(item.ID)
-
-		tmp = tmp + len(namespace.Projects)
-	}
-
-	c.Metrics.TotalProjects = tmp
-
 	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
-		"users":      len(users),
-		"namespaces": len(namespaces),
-		"core":       c.Config.HTTP.Core,
-		"ftp":        c.Config.FTP.Host,
-		"jwt":        c.Config.JWT.ExpireTime,
-		"mysql":      fmt.Sprintf("%s:%d", c.Config.MySQL.Host, c.Config.MySQL.Port),
-		"metrics":    c.Metrics,
+		"users":    len(users),
+		"projects": len(projects),
+		"core":     c.Config.HTTP.Core,
+		"ftp":      c.Config.FTP.Host,
+		"jwt":      c.Config.JWT.ExpireTime,
+		"mysql":    fmt.Sprintf("%s:%d", c.Config.MySQL.Host, c.Config.MySQL.Port),
+		"metrics":  c.Metrics,
 	})
 }

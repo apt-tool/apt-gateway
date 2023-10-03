@@ -23,7 +23,6 @@ type (
 		SuccessfulRequests int `json:"successful_requests"`
 		FailedRequests     int `json:"failed_requests"`
 		TotalExecutes      int `json:"total_executes"`
-		TotalProjects      int `json:"total_projects"`
 		TotalDownloads     int `json:"total_downloads"`
 	}
 )
