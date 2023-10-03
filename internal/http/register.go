@@ -28,7 +28,6 @@ func (r Register) Create(app *fiber.App) {
 	// create middleware
 	mid := middleware.Middleware{
 		JWTAuthenticator: authenticator,
-		Models:           r.ModelsInterface,
 		ErrHandler:       errHandler,
 	}
 
@@ -47,45 +46,26 @@ func (r Register) Create(app *fiber.App) {
 		},
 	}
 
-	// register endpoints
-
-	// login endpoint
-	app.Post("/login", ctl.Login) // #
+	// login endpoint and metrics
+	app.Post("/login", ctl.Login)
+	app.Get("/metrics", ctl.MetricsHandler)
 
 	// add auth middleware
 	auth := app.Use(mid.Auth)
 
-	// metrics
-	auth.Get("/metrics", mid.Admin, ctl.MetricsHandler)
-
-	// user crud
-	profile := auth.Group("/profile")
-	profile.Get("/", ctl.GetProfile)     // #
-	profile.Post("/", ctl.UpdateProfile) // #
-
 	// users crud
-	users := auth.Use(mid.Admin).Group("/users")
-	users.Get("/", ctl.GetUsersList)     // #
-	users.Post("/", ctl.CreateUser)      // #
-	users.Put("/:id", ctl.UpdateUser)    // #
-	users.Get("/:id", ctl.GetUser)       // #
-	users.Delete("/:id", ctl.DeleteUser) // #
-
-	// namespaces crud
-	namespaces := auth.Group("/namespaces")
-	namespaces.Get("/", mid.Admin, ctl.GetNamespacesList)                     // #
-	namespaces.Post("/", mid.Admin, ctl.CreateNamespace)                      // #
-	namespaces.Put("/:id", mid.Admin, ctl.UpdateNamespace)                    // #
-	namespaces.Get("/:id", mid.Admin, ctl.GetNamespace)                       // #
-	namespaces.Delete("/:id", mid.Admin, ctl.DeleteNamespace)                 // #
-	namespaces.Get("/user/list", ctl.GetUserNamespacesList)                   // #
-	namespaces.Get("/user/list/:id", mid.UserNamespace, ctl.GetUserNamespace) // #
+	users := auth.Use().Group("/users")
+	users.Get("/", ctl.GetUsersList)
+	users.Post("/", ctl.CreateUser)
+	users.Delete("/:id", ctl.DeleteUser)
 
 	// projects crud
-	projects := auth.Group("/projects/:namespace_id").Use(mid.UserProject)
-	projects.Post("/", ctl.CreateProject)                          // #
-	projects.Get("/:id", ctl.GetProject)                           // #
-	projects.Post("/:id", ctl.ExecuteProject)                      // #
-	projects.Delete("/:id", ctl.DeleteProject)                     // #
-	projects.Get("/:id/:document_id", ctl.DownloadProjectDocument) // #
+	projects := auth.Group("/projects")
+	projects.Get("/", ctl.GetProjectsList)
+	projects.Post("/", ctl.CreateProject)
+	projects.Get("/:id", ctl.GetProject)
+	projects.Post("/:id", ctl.ExecuteProject)
+	projects.Delete("/:id", ctl.DeleteProject)
+	projects.Get("/:id/documents/:document_id", ctl.DownloadProjectDocument)
+	projects.Post("/:id/documents/:document_id", ctl.RerunDocument)
 }

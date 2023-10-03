@@ -33,6 +33,26 @@ func (c Controller) CreateProject(ctx *fiber.Ctx) error {
 	return ctx.SendStatus(fiber.StatusOK)
 }
 
+// GetProjectsList returns all the projects
+func (c Controller) GetProjectsList(ctx *fiber.Ctx) error {
+	projects, err := c.Models.Projects.GetAll()
+	if err != nil {
+		return c.ErrHandler.ErrRecordNotFound(
+			ctx,
+			fmt.Errorf("[controller.project.Get] record not found error=%w", err),
+			MessageFailedEntityList,
+		)
+	}
+
+	records := make([]*response.ProjectResponse, 0)
+
+	for _, project := range projects {
+		records = append(records, response.ProjectResponse{}.DTO(project))
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(records)
+}
+
 // GetProject by its id
 func (c Controller) GetProject(ctx *fiber.Ctx) error {
 	tmp, _ := ctx.ParamsInt("id", 0)
@@ -102,7 +122,7 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 
 // RerunDocument will send http request to core
 func (c Controller) RerunDocument(ctx *fiber.Ctx) error {
-	tmp, _ := ctx.ParamsInt("id", 0)
+	tmp, _ := ctx.ParamsInt("document_id", 0)
 	documentID := uint(tmp)
 	url := fmt.Sprintf("%s/rerun/%d", c.Config.HTTP.Core, documentID)
 
