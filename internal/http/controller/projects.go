@@ -100,7 +100,7 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 
 		return c.ErrHandler.ErrLogical(
 			ctx,
-			fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err),
+			fmt.Errorf("[controller.project.Execute] failed to call core error=%w", err),
 			MessageFailedEntityList,
 		)
 	}
@@ -110,7 +110,7 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 
 		return c.ErrHandler.ErrLogical(
 			ctx,
-			fmt.Errorf("[controller.project.Execute] failed to execute project error=%w", err),
+			fmt.Errorf("[controller.project.Execute] bad call from core error=%w", err),
 			MessageFailedExecute,
 		)
 	}
