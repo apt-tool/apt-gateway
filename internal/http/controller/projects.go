@@ -109,7 +109,7 @@ func (c Controller) ExecuteProject(ctx *fiber.Ctx) error {
 
 		return c.ErrHandler.ErrLogical(
 			ctx,
-			fmt.Errorf("[controller.project.Execute] bad call from core error=%w", err),
+			fmt.Errorf("[controller.project.Execute] bad call from core error"),
 			MessageFailedExecute,
 		)
 	}
@@ -133,7 +133,7 @@ func (c Controller) RerunDocument(ctx *fiber.Ctx) error {
 
 		return c.ErrHandler.ErrLogical(
 			ctx,
-			fmt.Errorf("[controller.project.RerunDocument] failed to execute project error=%w", err),
+			fmt.Errorf("[controller.project.RerunDocument] failed to rerun document error=%w", err),
 			MessageFailedEntityList,
 		)
 	}
@@ -143,7 +143,7 @@ func (c Controller) RerunDocument(ctx *fiber.Ctx) error {
 
 		return c.ErrHandler.ErrLogical(
 			ctx,
-			fmt.Errorf("[controller.project.RerunDocument] failed to execute project error=%w", err),
+			fmt.Errorf("[controller.project.RerunDocument] got bad error from core error"),
 			MessageFailedExecute,
 		)
 	}
