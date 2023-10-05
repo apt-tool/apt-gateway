@@ -1,8 +1,7 @@
 # PTaaS Gateway
 
 ![](https://img.shields.io/badge/language-golang_v1.20-lightblue)
-![](https://img.shields.io/badge/tests-passed-green)
-![](https://img.shields.io/badge/version-0.1.1-red)
+![GitHub release (with filter)](https://img.shields.io/github/v/release/ptaas-tool/gateway)
 
 Gateway is the ```PTaaS``` restful API for handling client http requests.
 This module handles the user interface logic in order to communicate with
@@ -13,17 +12,18 @@ This module handles the user interface logic in order to communicate with
 Gateway app docker image address:
 
 ```shell
-docker pull amirhossein21/ptaas-tool:gateway-v0.1.1
+docker pull amirhossein21/ptaas-tool:gateway-v0.X.X
 ```
 
 ### configs
 
-Make sure to create ```config.yml``` file with the following variable init:
+Make sure to create ```config.yaml``` file with the following variable init:
 
 ```yaml
 http:
   port: 8080
   core: 'http://localhost:9090/api'
+  core_secret: 'secret'
   dev_mode: true
 jwt:
   private_key: 'super'
@@ -47,7 +47,7 @@ Setup gateway service in docker container with following command:
 
 ```shell
 docker run -d \
-  -v type=bind,source=$(pwd)/config.yml,dest=/app/config.yml \
+  -v type=bind,source=$(pwd)/config.yaml,dest=/app/config.yaml \
   -p 80:80 \
-  amirhossein21/ptaas-tool:gateway-v0.1.1
+  amirhossein21/ptaas-tool:gateway-v0.X.X
 ```
