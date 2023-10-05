@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-
 	"github.com/ptaas-tool/gateway/internal/http/request"
 	"github.com/ptaas-tool/gateway/internal/http/response"
 	"github.com/ptaas-tool/gateway/internal/utils/crypto"
