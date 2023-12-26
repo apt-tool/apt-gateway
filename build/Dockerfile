@@ -29,8 +29,5 @@ WORKDIR /app
 # copy executable file
 COPY --from=builder main .
 
-# allow main to be executed
-RUN chmod +x /main
-
 # run app executeable file
 CMD ["./main", "api"]
