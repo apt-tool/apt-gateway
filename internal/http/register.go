@@ -62,6 +62,9 @@ func (r Register) Create(app *fiber.App) {
 	// add auth middleware
 	auth := app.Use(mid.Auth)
 
+	// live tracking of project
+	auth.Get("/live-tracking/:project_id", ctl.GetTracksList) // last id in query param for filter
+
 	// users crud
 	users := auth.Group("/users")
 	users.Get("/", ctl.GetUsersList)
